@@ -1,5 +1,5 @@
 //
-// Created by edan on 12/14/18.
+// Created by ori on 12/14/18.
 //
 
 #ifndef PROJ1_SHUNTINGYARD_H
@@ -14,7 +14,7 @@ using namespace std;
 
 class ExpressionGenerator {
 public:
-    Expression* GenerateExp (vector<string> orig);
+    Expression* generateExp(vector<string> orig);
 private:
     vector<string>splitIt(string str, string token);
     int priority(const string &s);

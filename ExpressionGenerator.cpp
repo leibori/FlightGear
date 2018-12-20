@@ -1,12 +1,17 @@
 //
 // Created by ori on 12/14/18.
 //
+
 #include "ExpressionGenerator.h"
 #include "Number.h"
 #include "Add.h"
 #include "Sub.h"
 #include "Div.h"
 #include "Mul.h"
+#include "Bigger.h"
+#include "Smaller.h"
+#include "Equal.h"
+#include "Neg.h"
 #include <fstream>
 #include <vector>
 #include <iostream>
@@ -16,6 +21,24 @@
 #include <sstream>
 #include <deque>
 
+#define PLUS_IF if (temp == "+")
+#define MINUS_IF if (temp == "-")
+#define MULTIPLY_IF if (temp == "*")
+#define DEVISION_IF if (temp == "/")
+#define BIGGER_IF if (temp == ">")
+#define SMALLER_IF if (temp == "<")
+#define EQUAL_IF if (temp == "==")
+#define NEGATIVE_IF if (temp == "--")
+#define PLUS_SIGN "+"
+#define MINUS_SIGN "-"
+#define MULTIPLY_SIGN "*"
+#define DEVISION_SIGN "/"
+#define BIGGER_SIGN ">"
+#define SMALLER_SIGN  "<"
+#define EQUAL_SIGN "=="
+#define NEGATIVE_SIGN "--"
+
+
 using namespace std;
 
 /*
@@ -23,7 +46,8 @@ using namespace std;
  * The function check if the string it get is operator
  * */
 bool ExpressionGenerator::isOperator(const string &s) {
-    return (s == "+" || s == "-" || s == "*" || s == "/" || s == "^");
+    return (s == PLUS_SIGN || s == MINUS_SIGN || s == MULTIPLY_SIGN || s == DEVISION_SIGN
+            || s == BIGGER_SIGN || s == SMALLER_SIGN || s == EQUAL_SIGN || s == NEGATIVE_SIGN);
 }
 
 /*
@@ -32,13 +56,13 @@ bool ExpressionGenerator::isOperator(const string &s) {
  */
 int ExpressionGenerator::priority(const string &s) {
     int prio;
-    if (s == "*" || s == "/") {
+    if (s == NEGATIVE_SIGN) {
         prio = 3;
         return prio;
-    } else if (s == "+" || s == "-") {
+    } else if (s == MULTIPLY_SIGN || s == DEVISION_SIGN) {
         prio = 2;
         return prio;
-    } else if (s == "(" || s == ")") {
+    } else if (s == PLUS_SIGN || s == MINUS_SIGN) {
         prio = 1;
         return prio;
     } else {
@@ -77,7 +101,7 @@ deque<string> ExpressionGenerator::shuntingYardAlgoritem(vector<string> orig) {
     //operator: +, -, *, /, ()
     //operands: 1234567890
     for (int i = 0; i < parts.size(); i++) {
-        if (!isOperator(parts[i]) && priority(parts[i]) < 1) {
+        if (!isOperator(parts[i]) && (parts[i] != "(" && parts[i] != ")")) {
             outQueue.push_front(parts[i]);
         }
         if (parts[i] == "(") {
@@ -91,6 +115,12 @@ deque<string> ExpressionGenerator::shuntingYardAlgoritem(vector<string> orig) {
             s.pop();
         }
         if (isOperator(parts[i])) {
+            if (parts[i] == MINUS_SIGN) {
+                if (i == 0) { parts[i] = NEGATIVE_SIGN; }
+                if (isOperator(parts[i - 1]) || parts[i - 1] == "(" || parts[i - 1] == ")") {
+                    parts[i] = NEGATIVE_SIGN;
+                }
+            }
             while (!s.empty() && priority(s.top()) >= priority(parts[i])) {
                 outQueue.push_front(s.top());
                 s.pop();
@@ -98,16 +128,16 @@ deque<string> ExpressionGenerator::shuntingYardAlgoritem(vector<string> orig) {
             s.push(parts[i]);
         }
     }
-    //pop any remaining operators from the stack and insert to outputlist
+//pop any remaining operators from the stack and insert to outputlist
     while (!s.empty()) {
-        //outputList.push_back(s.top());
+//outputList.push_back(s.top());
         outQueue.push_front(s.top());
         s.pop();
     }
     return outQueue;
 }
 
-Expression *ExpressionGenerator::GenerateExp(vector<string> orig) {
+Expression *ExpressionGenerator::generateExp(vector<string> orig) {
     deque<string> postFix = shuntingYardAlgoritem(orig);
     string fromQu;
     Expression *numExp;
@@ -115,30 +145,46 @@ Expression *ExpressionGenerator::GenerateExp(vector<string> orig) {
     while (!postFix.empty()) {
         string temp = postFix.back();
         if (!isOperator(temp)) {
-            numExp = new Number(stoi(temp));
+            numExp = new Number(stod(temp));
             ouput.push(numExp);
             postFix.pop_back();
         } else {
-            Expression *right = ouput.top();
-            ouput.pop();
-            Expression *left = ouput.top();
-            ouput.pop();
-            if (temp == "+") {
-                numExp = new Add(left, right);
-                ouput.push(numExp);
-            } else if (temp == "-") {
-                numExp = new Sub(left, right);
-                ouput.push(numExp);
-            } else if (temp == "*") {
-                numExp = new Mul(left, right);
+            if (temp == NEGATIVE_SIGN) {
+                Expression *alone = ouput.top();
+                ouput.pop();
+                numExp = new Neg(alone);
                 ouput.push(numExp);
             } else {
-                numExp = new Div(left, right);
-                ouput.push(numExp);
+                Expression *right = ouput.top();
+                ouput.pop();
+                Expression *left = ouput.top();
+                ouput.pop();
+                PLUS_IF {
+                    numExp = new Add(left, right);
+                    ouput.push(numExp);
+                } else MINUS_IF {
+                    numExp = new Sub(left, right);
+                    ouput.push(numExp);
+                } else MULTIPLY_IF {
+                    numExp = new Mul(left, right);
+                    ouput.push(numExp);
+                } else DEVISION_IF {
+                    numExp = new Div(left, right);
+                    ouput.push(numExp);
+                } else BIGGER_IF {
+                    numExp = new Bigger(left, right);
+                    ouput.push(numExp);
+                } else SMALLER_IF {
+                    numExp = new Smaller(left, right);
+                    ouput.push(numExp);
+                } else EQUAL_IF {
+                    numExp = new Equal(left, right);
+                    ouput.push(numExp);
+                }
             }
             postFix.pop_back();
         }
-        ;
+
     }
     return ouput.top();
 }
