@@ -5,16 +5,17 @@
 #include <string>
 
 #include "Command.h"
+#include "SymbolTable.cpp"
 
 using namespace std;
 
 class RudderDefineVar : Command {
     double rudder;
-    map<string, double>* valuesMap;
+    SymbolTable symbolTable;
 public:
-    RudderDefineVar(double value, map<string, double>* map) {
+    RudderDefineVar(double value, SymbolTable symbolTable1) {
         rudder = value;
-        valuesMap = map;
+        symbolTable = symbolTable1;
     }
     void setRudder(double newValue) { rudder = newValue; }
     int execute();

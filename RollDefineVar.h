@@ -5,16 +5,17 @@
 #include <string>
 
 #include "Command.h"
+#include "SymbolTable.cpp"
 
 using namespace std;
 
 class RollDefineVar : Command {
     double roll;
-    map<string, double>* valuesMap;
+    SymbolTable symbolTable;
 public:
-    RollDefineVar(double value, map<string, double>* map) {
+    RollDefineVar(double value, SymbolTable symbolTable1) {
         roll = value;
-        valuesMap = map;
+        symbolTable = symbolTable1;
     }
     void setRoll(double newValue) { roll = newValue; }
     int execute();

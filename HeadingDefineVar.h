@@ -5,16 +5,17 @@
 #include <string>
 
 #include "Command.h"
+#include "SymbolTable.cpp"
 
 using namespace std;
 
 class HeadingDefineVar : Command {
     double heading;
-    map<string, double>* valuesMap;
+    SymbolTable symbolTable;
 public:
-    HeadingDefineVar(double value, map<string, double>* map) {
+    HeadingDefineVar(double value, SymbolTable symbolTable1) {
         heading = value;
-        valuesMap = map;
+        symbolTable = symbolTable1;
     }
     void setHeading(double newValue) { heading = newValue; }
     int execute();

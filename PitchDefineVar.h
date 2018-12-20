@@ -5,16 +5,17 @@
 #include <string>
 
 #include "Command.h"
+#include "SymbolTable.cpp"
 
 using namespace std;
 
 class PitchDefineVar : Command {
     double pitch;
-    map<string, double>* valuesMap;
+    SymbolTable symbolTable;
 public:
-    PitchDefineVar(double value, map<string, double>* map) {
+    PitchDefineVar(double value, SymbolTable symbolTable1) {
         pitch = value;
-        valuesMap = map;
+        symbolTable = symbolTable1;
     }
     void setPitch(double newValue) { pitch = newValue; }
     int execute();

@@ -5,16 +5,17 @@
 #include <string>
 
 #include "Command.h"
+#include "SymbolTable.cpp"
 
 using namespace std;
 
 class ElevatorDefineVar : Command {
     double elevator;
-    map<string, double>* valuesMap;
+    SymbolTable symbolTable;
 public:
-    ElevatorDefineVar(double value, map<string, double>* map) {
+    ElevatorDefineVar(double value, SymbolTable symbolTable1) {
         elevator = value;
-        valuesMap = map;
+        symbolTable = symbolTable1;
     }
     void setElevator(double newValue) { elevator = newValue; }
     int execute();

@@ -5,16 +5,17 @@
 #include <string>
 
 #include "Command.h"
+#include "SymbolTable.cpp"
 
 using namespace std;
 
 class AileronDefineVar : Command {
     double aileron;
-    map<string, double>* valuesMap;
+    SymbolTable symbolTable;
 public:
-    AileronDefineVar(double value, map<string, double>* map) {
+    AileronDefineVar(double value, SymbolTable symbolTable1) {
         aileron = value;
-        valuesMap = map;
+        symbolTable = symbolTable1;
     }
     void setAileron(double newValue) { aileron = newValue; }
     int execute();

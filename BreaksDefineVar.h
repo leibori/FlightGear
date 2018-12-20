@@ -5,16 +5,17 @@
 #include <string>
 
 #include "Command.h"
+#include "SymbolTable.cpp"
 
 using namespace std;
 
 class BreaksDefineVar : Command {
     double breaks;
-    map<string, double>* valuesMap;
+    SymbolTable symbolTable;
 public:
-    BreaksDefineVar(double value, map<string, double>* map) {
+    BreaksDefineVar(double value, SymbolTable symbolTable1) {
         breaks = value;
-        valuesMap = map;
+        symbolTable = symbolTable1;
     }
     void setBreaks(double newValue) { breaks = newValue; }
     int execute();

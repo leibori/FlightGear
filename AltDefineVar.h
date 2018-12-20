@@ -5,16 +5,17 @@
 #include <string>
 
 #include "Command.h"
+#include "SymbolTable.cpp"
 
 using namespace std;
 
 class AltDefineVar : Command {
     double alt;
-    map<string, double>* valuesMap;
+    SymbolTable symbolTable;
 public:
-    AltDefineVar(double value, map<string, double>* map) {
+    AltDefineVar(double value, SymbolTable symbolTable1) {
         alt = value;
-        valuesMap = map;
+        symbolTable = symbolTable1;
     }
     void setAlt(double newValue) { alt = newValue; }
     int execute();

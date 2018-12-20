@@ -5,16 +5,17 @@
 #include <string>
 
 #include "Command.h"
+#include "SymbolTable.cpp"
 
 using namespace std;
 
 class ThrottleDefineVar : Command {
     double throttle;
-    map<string, double>* valuesMap;
+    SymbolTable symbolTable;
 public:
-    ThrottleDefineVar(double value, map<string, double>* map) {
+    ThrottleDefineVar(double value, SymbolTable symbolTable1) {
         throttle = value;
-        valuesMap = map;
+        symbolTable = symbolTable1;
     }
     void setThrottle(double newValue) { throttle = newValue; }
     int execute();

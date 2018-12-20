@@ -5,16 +5,17 @@
 #include <string>
 
 #include "Command.h"
+#include "SymbolTable.cpp"
 
 using namespace std;
 
 class AirspeedDefineVar : Command {
     double airspeed;
-    map<string, double>* valuesMap;
+    SymbolTable symbolTable;
 public:
-    AirspeedDefineVar(double value, map<string, double>* map) {
-        airspeed = value;
-        valuesMap = map;
+    AirspeedDefineVar(double value, SymbolTable symbolTable1) {
+        aileron = value;
+        symbolTable = symbolTable1;
     }
     void setAirspeed(double newValue) { airspeed = newValue; }
     int execute();

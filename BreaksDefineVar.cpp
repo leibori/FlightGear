@@ -1,8 +1,16 @@
 #include "BreaksDefineVar.h"
 
 int BreaksDefineVar::execute() {
-    map<string, double>::iterator it = valuesMap->find("breaks");
-    if (it != valuesMap->end()) {
-        it->second = breaks;
+    std::map<string, bool>::iterator it1 = symbolTable.getInitializeTable().find("ailerone");
+    std::map<string, double>::iterator it2 = symbolTable.getValuesTable().find("ailerone");
+    std::map<string, Command*>::iterator it3 = symbolTable.getCommandTable().find("ailerone");
+    if (it1 != symbolTable.getInitializeTable().end()) {
+        it1->second = true;
+    }
+    if (it2 != symbolTable.getValuesTable().end()) {
+        it2->second = breaks;
+    }
+    if (it3 != symbolTable.getCommandTable().end()) {
+        it3->second = this;
     }
 }
