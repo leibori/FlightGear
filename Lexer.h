@@ -14,7 +14,7 @@ class Lexer{
     string toCut;
 public:
     Lexer(const string &toCut);
-
+    vector<string>splitIt(string str, string token);
     vector<string> lexerAlgorithem();
 
 

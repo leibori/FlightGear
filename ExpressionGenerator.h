@@ -16,7 +16,6 @@ class ExpressionGenerator {
 public:
     Expression* generateExp(vector<string> orig);
 private:
-    vector<string>splitIt(string str, string token);
     int priority(const string &s);
     bool isOperator(const string &s);
     deque<string> shuntingYardAlgoritem(vector<string> orig);
