@@ -4,12 +4,12 @@
 #include <map>
 #include <string>
 
-#include "Command.h"
-#include "SymbolTable.cpp"
+#include "DefineVarCommand.h"
+#include "SymbolTable.h"
 
 using namespace std;
 
-class AileronDefineVar : Command {
+class AileronDefineVar : DefineVarCommand {
     double aileron;
     SymbolTable symbolTable;
 public:
@@ -18,6 +18,7 @@ public:
         symbolTable = symbolTable1;
     }
     void setAileron(double newValue) { aileron = newValue; }
+    void getValue() { return aileron; }
     int execute();
 };
 

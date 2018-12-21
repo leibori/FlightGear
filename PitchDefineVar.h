@@ -4,12 +4,12 @@
 #include <map>
 #include <string>
 
-#include "Command.h"
-#include "SymbolTable.cpp"
+#include "DefineVarCommand.h"
+#include "SymbolTable.h"
 
 using namespace std;
 
-class PitchDefineVar : Command {
+class PitchDefineVar : DefineVarCommand {
     double pitch;
     SymbolTable symbolTable;
 public:
@@ -18,6 +18,7 @@ public:
         symbolTable = symbolTable1;
     }
     void setPitch(double newValue) { pitch = newValue; }
+    void getValue() { return pitch; }
     int execute();
 };
 

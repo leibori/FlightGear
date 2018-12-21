@@ -4,12 +4,12 @@
 #include <map>
 #include <string>
 
-#include "Command.h"
-#include "SymbolTable.cpp"
+#include "DefineVarCommand.h"
+#include "SymbolTable.h"
 
 using namespace std;
 
-class ThrottleDefineVar : Command {
+class ThrottleDefineVar : DefineVarCommand {
     double throttle;
     SymbolTable symbolTable;
 public:
@@ -18,6 +18,7 @@ public:
         symbolTable = symbolTable1;
     }
     void setThrottle(double newValue) { throttle = newValue; }
+    void getValue() { return throttle; }
     int execute();
 };
 

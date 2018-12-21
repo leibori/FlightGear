@@ -4,12 +4,12 @@
 #include <map>
 #include <string>
 
-#include "Command.h"
-#include "SymbolTable.cpp"
+#include "DefineVarCommand.h"
+#include "SymbolTable.h"
 
 using namespace std;
 
-class HeadingDefineVar : Command {
+class HeadingDefineVar : DefineVarCommand {
     double heading;
     SymbolTable symbolTable;
 public:
@@ -18,6 +18,7 @@ public:
         symbolTable = symbolTable1;
     }
     void setHeading(double newValue) { heading = newValue; }
+    void getValue() { return heading; }
     int execute();
 };
 

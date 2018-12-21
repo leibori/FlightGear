@@ -4,12 +4,12 @@
 #include <map>
 #include <string>
 
-#include "Command.h"
-#include "SymbolTable.cpp"
+#include "DefineVarCommand.h"
+#include "SymbolTable.h"
 
 using namespace std;
 
-class RudderDefineVar : Command {
+class RudderDefineVar : DefineVarCommand {
     double rudder;
     SymbolTable symbolTable;
 public:
@@ -18,6 +18,7 @@ public:
         symbolTable = symbolTable1;
     }
     void setRudder(double newValue) { rudder = newValue; }
+    void getValue() { return rudder; }
     int execute();
 };
 

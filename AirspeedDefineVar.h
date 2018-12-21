@@ -4,12 +4,12 @@
 #include <map>
 #include <string>
 
-#include "Command.h"
-#include "SymbolTable.cpp"
+#include "DefineVarCommand.h"
+#include "SymbolTable.h"
 
 using namespace std;
 
-class AirspeedDefineVar : Command {
+class AirspeedDefineVar : DefineVarCommand {
     double airspeed;
     SymbolTable symbolTable;
 public:
@@ -18,6 +18,7 @@ public:
         symbolTable = symbolTable1;
     }
     void setAirspeed(double newValue) { airspeed = newValue; }
+    void getValue() { return airspeed; }
     int execute();
 };
 

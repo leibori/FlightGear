@@ -4,12 +4,12 @@
 #include <map>
 #include <string>
 
-#include "Command.h"
-#include "SymbolTable.cpp"
+#include "DefineVarCommand.h"
+#include "SymbolTable.h"
 
 using namespace std;
 
-class ElevatorDefineVar : Command {
+class ElevatorDefineVar : DefineVarCommand {
     double elevator;
     SymbolTable symbolTable;
 public:
@@ -18,6 +18,7 @@ public:
         symbolTable = symbolTable1;
     }
     void setElevator(double newValue) { elevator = newValue; }
+    void getValue() { return elevator; }
     int execute();
 };
 

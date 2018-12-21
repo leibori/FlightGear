@@ -4,12 +4,12 @@
 #include <map>
 #include <string>
 
-#include "Command.h"
-#include "SymbolTable.cpp"
+#include "DefineVarCommand.h"
+#include "SymbolTable.h"
 
 using namespace std;
 
-class AltDefineVar : Command {
+class AltDefineVar : DefineVarCommand {
     double alt;
     SymbolTable symbolTable;
 public:
@@ -18,6 +18,7 @@ public:
         symbolTable = symbolTable1;
     }
     void setAlt(double newValue) { alt = newValue; }
+    void getValue() { return alt; }
     int execute();
 };
 

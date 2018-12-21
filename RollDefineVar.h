@@ -4,12 +4,12 @@
 #include <map>
 #include <string>
 
-#include "Command.h"
-#include "SymbolTable.cpp"
+#include "DefineVarCommand.h"
+#include "SymbolTable.h"
 
 using namespace std;
 
-class RollDefineVar : Command {
+class RollDefineVar : DefineVarCommand {
     double roll;
     SymbolTable symbolTable;
 public:
@@ -18,6 +18,7 @@ public:
         symbolTable = symbolTable1;
     }
     void setRoll(double newValue) { roll = newValue; }
+    void getValue() { return roll; }
     int execute();
 };
 
