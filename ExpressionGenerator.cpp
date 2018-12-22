@@ -11,6 +11,7 @@
 #include "Bigger.h"
 #include "Smaller.h"
 #include "Equal.h"
+#include "CommandExpression.h"
 #include "Neg.h"
 #include <fstream>
 #include <vector>
@@ -20,6 +21,9 @@
 #include <vector>
 #include <sstream>
 #include <deque>
+#include <string>
+#include <algorithm>
+#include <map>
 
 #define PLUS_IF if (temp == "+")
 #define MINUS_IF if (temp == "-")
@@ -71,8 +75,36 @@ int ExpressionGenerator::priority(const string &s) {
     }
 }
 
+bool ExpressionGenerator::isCommandName(const string &s) {
+    return !(isOperator(s) || isNumber(s) || s == "(" || s == ")");
+}
 
+bool ExpressionGenerator::isNumber(const string &s) {
+    int i = 0;
+    bool isNum = false;
+    while (i != s.size()) {
+        isNum = isdigit(s[i]) != 0;
+    }
+    return isNum;
+}
 
+bool isCommandVar(const string &str) {
+    if (str == "aileron" || str == "airspeed" || str == "alt" || str == "breaks" || str == "elevator"
+    ||str == "heading"|| str == "pitch" || str == "roll" ||str == "rudder"|| str == "throttle") {
+        return true;
+    }
+    throw runtime_error("Eror, Not Found");}
+
+Expression *CommmandExpressGener(string str, map<string, Command *> commandMap) {
+    if (commandMap.count(str)) {
+        Command *com = commandMap.at(str);
+        DefineVarCommand* dvc = (DefineVarCommand*) com;
+        if (isCommandVar(str)) {
+            Expression *exp = new CommandExpression(dvc);
+            return exp;
+        }
+    }
+    throw runtime_error("Eror, Not Found");}
 
 /*
  * function name: shuntingYardAlgoritem
@@ -123,7 +155,7 @@ deque<string> ExpressionGenerator::shuntingYardAlgoritem(vector<string> orig) {
     return outQueue;
 }
 
-Expression *ExpressionGenerator::generateExp(vector<string> orig) {
+Expression *ExpressionGenerator::generateExp(vector<string> orig, map<string, Command *> commandMap) {
     deque<string> postFix = shuntingYardAlgoritem(orig);
     string fromQu;
     Expression *numExp;
@@ -131,7 +163,12 @@ Expression *ExpressionGenerator::generateExp(vector<string> orig) {
     while (!postFix.empty()) {
         string temp = postFix.back();
         if (!isOperator(temp)) {
-            numExp = new Number(stod(temp));
+            if (isNumber(temp)) {
+                numExp = new Number(stod(temp));
+            }
+            if (isCommandName(temp)) {
+                numExp = CommmandExpressGener(temp, commandMap);
+            }
             ouput.push(numExp);
             postFix.pop_back();
         } else {
