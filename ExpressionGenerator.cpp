@@ -135,7 +135,7 @@ deque<string> ExpressionGenerator::shuntingYardAlgoritem(vector<string> orig) {
         if (isOperator(parts[i])) {
             if (parts[i] == MINUS_SIGN) {
                 if (i == 0) { parts[i] = NEGATIVE_SIGN; }
-                if (isOperator(parts[i - 1]) || parts[i - 1] == "(" || parts[i - 1] == ")") {
+                if (isOperator(parts[i - 1]) || parts[i - 1] == "(") {
                     parts[i] = NEGATIVE_SIGN;
                 }
             }
