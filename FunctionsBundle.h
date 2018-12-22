@@ -7,6 +7,7 @@
 #include <sstream>
 
 #include "SymbolTable.h"
+#include "Lexer.h"
 #include "Expression.h"
 #include "ExpressionGenerator.h"
 #include "OpenServerCommand.h"
@@ -31,14 +32,14 @@ public:
     string replaceStringWithValue(map<string,double> newValues, string str);
     Expression* createExpression(map<string,Command*> commandTable, map<string,double> newValues, vector<string>
             parts, int start, int end);
-    void inputToSymbolMap(SymbolTable symbolTable, map<string,double> newValues, string str, Expression* expression);
-    string findAndCreateTypeOfDefineVarCommand(SymbolTable symbolTable, map<string,double> newVariables, vector<string>
+    void inputToSymbolMap(SymbolTable* symbolTable, map<string,double> newValues, string str, Expression* expression);
+    string findAndCreateTypeOfDefineVarCommand(SymbolTable* symbolTable, map<string,double> newVariables, vector<string>
             parts);
-    Command* createIfCommand(SymbolTable symbolTable, map<string,double> newVariables, vector<string> parts,
+    Command* createIfCommand(SymbolTable* symbolTable, map<string,double> newVariables, vector<string> parts,
             stack<Command*> commands, ifstream& in);
-    Command* createLoopCommand(SymbolTable symbolTable, map<string,double> newVariables, vector<string> parts,
+    Command* createLoopCommand(SymbolTable* symbolTable, map<string,double> newVariables, vector<string> parts,
             stack<Command*> commands, ifstream& in);
-    void parser(SymbolTable symbolTable);
+    void parser(string fileName, SymbolTable* symbolTable);
 };
 
 
