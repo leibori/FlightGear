@@ -9,17 +9,17 @@
 
 using namespace std;
 
-class PitchDefineVar : DefineVarCommand {
+class PitchDefineVar : public DefineVarCommand {
     double pitch;
-    SymbolTable symbolTable;
+    SymbolTable* symbolTable;
 public:
-    PitchDefineVar(double value, SymbolTable symbolTable1) {
+    PitchDefineVar(double value, SymbolTable* symbolTable1) {
         pitch = value;
         symbolTable = symbolTable1;
     }
     void setPitch(double newValue) { pitch = newValue; }
-    void getValue() { return pitch; }
-    int execute();
+    double getValue() { return pitch; }
+    void execute();
 };
 
 #endif //PROJECT_PITCHDEFINEVAR_H

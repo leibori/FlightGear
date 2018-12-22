@@ -9,17 +9,17 @@
 
 using namespace std;
 
-class AileronDefineVar : DefineVarCommand {
+class AileronDefineVar : public DefineVarCommand {
     double aileron;
-    SymbolTable symbolTable;
+    SymbolTable* symbolTable;
 public:
-    AileronDefineVar(double value, SymbolTable symbolTable1) {
+    AileronDefineVar(double value, SymbolTable* symbolTable1) {
         aileron = value;
         symbolTable = symbolTable1;
     }
     void setAileron(double newValue) { aileron = newValue; }
-    void getValue() { return aileron; }
-    int execute();
+    double getValue() { return aileron; }
+    void execute();
 };
 
 

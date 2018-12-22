@@ -9,17 +9,17 @@
 
 using namespace std;
 
-class HeadingDefineVar : DefineVarCommand {
+class HeadingDefineVar : public DefineVarCommand {
     double heading;
-    SymbolTable symbolTable;
+    SymbolTable* symbolTable;
 public:
-    HeadingDefineVar(double value, SymbolTable symbolTable1) {
+    HeadingDefineVar(double value, SymbolTable* symbolTable1) {
         heading = value;
         symbolTable = symbolTable1;
     }
     void setHeading(double newValue) { heading = newValue; }
-    void getValue() { return heading; }
-    int execute();
+    double getValue() { return heading; }
+    void execute();
 };
 
 #endif //PROJECT_HEADINGDEFINEVAR_H

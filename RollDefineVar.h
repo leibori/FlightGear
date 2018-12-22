@@ -9,17 +9,17 @@
 
 using namespace std;
 
-class RollDefineVar : DefineVarCommand {
+class RollDefineVar : public DefineVarCommand {
     double roll;
-    SymbolTable symbolTable;
+    SymbolTable* symbolTable;
 public:
-    RollDefineVar(double value, SymbolTable symbolTable1) {
+    RollDefineVar(double value, SymbolTable* symbolTable1) {
         roll = value;
         symbolTable = symbolTable1;
     }
     void setRoll(double newValue) { roll = newValue; }
-    void getValue() { return roll; }
-    int execute();
+    double getValue() { return roll; }
+    void execute();
 };
 
 #endif //PROJECT_ROLLDEFINEVAR_H

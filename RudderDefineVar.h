@@ -9,17 +9,17 @@
 
 using namespace std;
 
-class RudderDefineVar : DefineVarCommand {
+class RudderDefineVar : public DefineVarCommand {
     double rudder;
-    SymbolTable symbolTable;
+    SymbolTable* symbolTable;
 public:
-    RudderDefineVar(double value, SymbolTable symbolTable1) {
+    RudderDefineVar(double value, SymbolTable* symbolTable1) {
         rudder = value;
         symbolTable = symbolTable1;
     }
     void setRudder(double newValue) { rudder = newValue; }
-    void getValue() { return rudder; }
-    int execute();
+    double getValue() { return rudder; }
+    void execute();
 };
 
 #endif //PROJECT_RUDDERDEFINEVAR_H

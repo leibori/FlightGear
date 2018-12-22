@@ -9,17 +9,17 @@
 
 using namespace std;
 
-class ThrottleDefineVar : DefineVarCommand {
+class ThrottleDefineVar : public DefineVarCommand {
     double throttle;
-    SymbolTable symbolTable;
+    SymbolTable* symbolTable;
 public:
-    ThrottleDefineVar(double value, SymbolTable symbolTable1) {
+    ThrottleDefineVar(double value, SymbolTable* symbolTable1) {
         throttle = value;
         symbolTable = symbolTable1;
     }
     void setThrottle(double newValue) { throttle = newValue; }
-    void getValue() { return throttle; }
-    int execute();
+    double getValue() { return throttle; }
+    void execute();
 };
 
 #endif //PROJECT_THROTTLEDEFINEVAR_H

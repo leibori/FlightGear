@@ -9,17 +9,17 @@
 
 using namespace std;
 
-class BreaksDefineVar : DefineVarCommand {
+class BreaksDefineVar : public DefineVarCommand {
     double breaks;
-    SymbolTable symbolTable;
+    SymbolTable* symbolTable;
 public:
-    BreaksDefineVar(double value, SymbolTable symbolTable1) {
+    BreaksDefineVar(double value, SymbolTable* symbolTable1) {
         breaks = value;
         symbolTable = symbolTable1;
     }
     void setBreaks(double newValue) { breaks = newValue; }
-    void getValue() { return breaks; }
-    int execute();
+    double getValue() { return breaks; }
+    void execute();
 };
 
 #endif //PROJECT_BREAKSDEFINEVAR_H

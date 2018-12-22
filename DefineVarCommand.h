@@ -3,7 +3,7 @@
 
 #include "Command.h"
 
-class DefineVarCommand : Command {
+class DefineVarCommand : public Command {
 public:
     virtual double getValue() = 0;
 };

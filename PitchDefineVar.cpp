@@ -1,16 +1,16 @@
 #include "PitchDefineVar.h"
 
-int PitchDefineVar::execute() {
-    std::map<string, bool>::iterator it1 = symbolTable.getInitializeTable().find("ailerone");
-    std::map<string, double>::iterator it2 = symbolTable.getValuesTable().find("ailerone");
-    std::map<string, Command*>::iterator it3 = symbolTable.getCommandTable().find("ailerone");
-    if (it1 != symbolTable.getInitializeTable().end()) {
+void PitchDefineVar::execute() {
+    std::map<string, bool>::iterator it1 = symbolTable->getInitializeTable().find("pitch");
+    std::map<string, double>::iterator it2 = symbolTable->getValuesTable().find("pitch");
+    std::map<string, Command*>::iterator it3 = symbolTable->getCommandTable().find("pitch");
+    if (it1 != symbolTable->getInitializeTable().end()) {
         it1->second = true;
     }
-    if (it2 != symbolTable.getValuesTable().end()) {
+    if (it2 != symbolTable->getValuesTable().end()) {
         it2->second = pitch;
     }
-    if (it3 != symbolTable.getCommandTable().end()) {
+    if (it3 != symbolTable->getCommandTable().end()) {
         it3->second = this;
     }
 }

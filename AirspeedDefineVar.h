@@ -9,17 +9,17 @@
 
 using namespace std;
 
-class AirspeedDefineVar : DefineVarCommand {
+class AirspeedDefineVar : public DefineVarCommand {
     double airspeed;
-    SymbolTable symbolTable;
+    SymbolTable* symbolTable;
 public:
-    AirspeedDefineVar(double value, SymbolTable symbolTable1) {
-        aileron = value;
+    AirspeedDefineVar(double value, SymbolTable* symbolTable1) {
+        airspeed = value;
         symbolTable = symbolTable1;
     }
     void setAirspeed(double newValue) { airspeed = newValue; }
-    void getValue() { return airspeed; }
-    int execute();
+    double getValue() { return airspeed; }
+    void execute();
 };
 
 #endif //PROJECT_AIRSPEEDDEFINEVAR_H
