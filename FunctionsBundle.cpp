@@ -26,7 +26,10 @@ string FunctionBundles::findAndCreateTypeOfDefineVarCommand(SymbolTable* symbolT
         } else {
             Expression* expression = createExpression(symbolTable->getCommandTable(), parts, 2, (int) parts.size());
             if (symbolTable->getCommandTable().find(parts[0]) != symbolTable->getCommandTable().end()) {
-                ((DefineVarCommand*)symbolTable->getCommandTable().at(parts[0]))->setValue(expression->calculate());
+                if (symbolTable->getCommandTable().find(parts[0])->first != "connect" && symbolTable->getCommandTable
+                ().find(parts[0])->first != "openDataServer") {
+                    ((DefineVarCommand*)symbolTable->getCommandTable().at(parts[0]))->setValue(expression->calculate());
+                }
                 return parts[0];
             } else {
                 throw "DefineVarCommand not initialized";
