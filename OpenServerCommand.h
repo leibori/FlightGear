@@ -6,7 +6,7 @@
 
 #include "Command.h"
 
-class OpenServerCommand : Command {
+class OpenServerCommand : public Command {
     int port;
     int frequency;
 public:
@@ -16,7 +16,7 @@ public:
     }
     void setPort(int newPort) { port = newPort; }
     void setFrequency(int newFreq) { frequency = newFreq; }
-    int execute();
+    void execute();
 };
 
 #endif //PROJECT_OPENSERVERCOMMAND_H
