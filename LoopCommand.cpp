@@ -1,9 +1,13 @@
 #include "LoopCommand.h"
 
-int LoopCommand::execute() {
-    while (condition) {
+void LoopCommand::execute() {
+    while (condition->calculate()) {
         for (auto& command : commands) {
-            command.execute();
+            command->execute();
         }
     }
+}
+
+void LoopCommand::addCommand(Command* command) {
+    commands.push_back(command);
 }

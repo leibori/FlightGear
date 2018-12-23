@@ -1,7 +1,11 @@
 #include "FuncCommand.h"
 
-int FuncCommand::execute() {
+void FuncCommand::execute() {
     for (auto& command : commands) {
-        command.execute();
+        command->execute();
     }
+}
+
+void FuncCommand::addCommand(Command* command) {
+    commands.push_back(command);
 }

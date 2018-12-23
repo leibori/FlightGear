@@ -1,9 +1,13 @@
 #include "IfCommand.h"
 
-int IfCommand::execute() {
-    if (condition) {
+void IfCommand::execute() {
+    if (condition->calculate()) {
         for (auto& command : commands) {
-            command.execute();
+            command->execute();
         }
     }
+}
+
+void IfCommand::addCommand(Command* command) {
+    commands.push_back(command);
 }
