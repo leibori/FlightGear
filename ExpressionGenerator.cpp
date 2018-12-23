@@ -32,7 +32,6 @@
 #define BIGGER_IF if (temp == ">")
 #define SMALLER_IF if (temp == "<")
 #define EQUAL_IF if (temp == "==")
-#define NEGATIVE_IF if (temp == "--")
 #define PLUS_SIGN "+"
 #define MINUS_SIGN "-"
 #define MULTIPLY_SIGN "*"
@@ -40,7 +39,7 @@
 #define BIGGER_SIGN ">"
 #define SMALLER_SIGN  "<"
 #define EQUAL_SIGN "=="
-#define NEGATIVE_SIGN "--"
+#define NEGATIVE_SIGN "$"
 
 
 using namespace std;
@@ -84,21 +83,22 @@ bool ExpressionGenerator::isNumber(const string &s) {
     bool isNum = false;
     while (i != s.size()) {
         isNum = isdigit(s[i]) != 0;
+        i++;
     }
     return isNum;
 }
 
-bool isCommandVar(const string &str) {
-    if (str == "aileron" || str == "airspeed" || str == "alt" || str == "breaks" || str == "elevator"
-    ||str == "heading"|| str == "pitch" || str == "roll" ||str == "rudder"|| str == "throttle") {
-        return true;
+bool ExpressionGenerator::isCommandVar(const string &str) {
+    if (str == "openServer" || str == "connect") {
+        throw runtime_error("Eror, Not Found");
     }
-    throw runtime_error("Eror, Not Found");}
+    return true;
+}
 
-Expression *CommmandExpressGener(string str, map<string, Command *> commandMap) {
+Expression* ExpressionGenerator::CommmandExpressGener(string str, map<string, Command *> commandMap) {
     if (commandMap.count(str)) {
         Command *com = commandMap.at(str);
-        DefineVarCommand* dvc = (DefineVarCommand*) com;
+        auto dvc = (DefineVarCommand*) com;
         if (isCommandVar(str)) {
             Expression *exp = new CommandExpression(dvc);
             return exp;
@@ -116,7 +116,7 @@ deque<string> ExpressionGenerator::shuntingYardAlgoritem(vector<string> orig) {
     deque<string> outQueue;
     stack<string> s; //main stack
 
-    //operator: +, -, *, /, ()
+    //operator: +, -, *, /, (), >, <, ==
     //operands: 1234567890
     for (int i = 0; i < parts.size(); i++) {
         if (!isOperator(parts[i]) && (parts[i] != "(" && parts[i] != ")")) {
