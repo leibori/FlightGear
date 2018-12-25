@@ -1,9 +1,5 @@
-//
-// Created by edan on 12/21/18.
-//
-
-#ifndef PROJ1_SYMBOLTABLE_H
-#define PROJ1_SYMBOLTABLE_H
+#ifndef PROJECT_SYMBOLTABLE_H
+#define PROJECT_SYMBOLTABLE_H
 
 #include <map>
 #include <string>
@@ -15,13 +11,20 @@ using namespace std;
 class SymbolTable {
     map<string,Command*> commandTable;
     map<string,double> valuesTable;
-    map<string,double> pathValuesTable;
+    map<string,string> bindTable;
+    map<string,double> bindValuesTable;
 public:
     SymbolTable() {}
 
     map<string, Command *> &getCommandTable() { return commandTable; }
 
     map<string, double> &getValuesTable() { return valuesTable; }
+
+    map<string, string> &getBindTable() { return bindTable; }
+
+    map<string, double> &getBindValuesTable() { return bindValuesTable; }
+
+
 };
 
-#endif //PROJ1_SYMBOLTABLE_H
+#endif //PROJECT_SYMBOLTABLE_H

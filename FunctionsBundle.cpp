@@ -1,36 +1,34 @@
 #include "FunctionsBundle.h"
 
-Expression* FunctionBundles::createExpression(map<string,Command*> commandTable, vector<string> parts, int start, int
-end) {
+Expression* FunctionBundles::createExpression(map<string,double> valueTable, vector<string> parts, int start, int end) {
     ExpressionGenerator expressionGenerator;
     vector<string> value;
     for ( int i = start; i < end; i++) {
         value.push_back(parts[i]);
     }
-    return expressionGenerator.generateExp(value, commandTable);
+    return expressionGenerator.generateExp(value, valueTable);
 }
 
-string FunctionBundles::findAndCreateTypeOfDefineVarCommand(SymbolTable* symbolTable, vector<string> parts) {
+Command* FunctionBundles::findAndCreateTypeOfDefineVarCommand(SymbolTable* symbolTable, vector<string> parts) {
     if (parts[0] == "var" && parts[2] == "=") {
         if (parts[3] == "bind") {
 
         } else {
-            Expression* expression = createExpression(symbolTable->getCommandTable(), parts, 3, (int) parts.size());
-            DefineVarCommand* defineVarCommand = new DefineVarCommand(parts[1], expression->calculate(), symbolTable);
-            defineVarCommand->execute();
-            return parts[1];
+            Expression* expression = createExpression(symbolTable->getValuesTable(), parts, 3, (int) parts.size());
+            DefineVarCommand* defineVarCommand = new DefineVarCommand(parts[1], expression, symbolTable);
+            return defineVarCommand;
         }
     } else if (parts[1] == "=") {
         if (parts[2] == "bind") {
 
         } else {
-            Expression* expression = createExpression(symbolTable->getCommandTable(), parts, 2, (int) parts.size());
-            if (symbolTable->getCommandTable().find(parts[0]) != symbolTable->getCommandTable().end()) {
+            Expression* expression = createExpression(symbolTable->getValuesTable(), parts, 2, (int) parts.size());
+            if (symbolTable->getValuesTable().find(parts[0]) != symbolTable->getValuesTable().end()) {
                 if (symbolTable->getCommandTable().find(parts[0])->first != "connect" && symbolTable->getCommandTable
                 ().find(parts[0])->first != "openDataServer") {
-                    ((DefineVarCommand*)symbolTable->getCommandTable().at(parts[0]))->setValue(expression->calculate());
+                    DefineVarCommand* defineVarCommand = new DefineVarCommand(parts[0], expression, symbolTable);
+                    return defineVarCommand;
                 }
-                return parts[0];
             } else {
                 throw "DefineVarCommand not initialized";
             }
@@ -38,14 +36,13 @@ string FunctionBundles::findAndCreateTypeOfDefineVarCommand(SymbolTable* symbolT
     }
 }
 
-Command* FunctionBundles::createIfCommand(SymbolTable* symbolTable, vector<string> parts, stack<Command*> commands,
-        ifstream& in) {
+Command* FunctionBundles::createIfCommand(SymbolTable* symbolTable, vector<string> parts, ifstream& in) {
     string line;
     Expression* condition;
     if (parts[parts.size() - 1] == "{") {
-        condition = createExpression(symbolTable->getCommandTable(), parts, 1, (int) (parts.size() - 1));
+        condition = createExpression(symbolTable->getValuesTable(), parts, 1, (int) (parts.size() - 1));
     } else {
-        condition = createExpression(symbolTable->getCommandTable(), parts, 1, (int) parts.size());
+        condition = createExpression(symbolTable->getValuesTable(), parts, 1, (int) parts.size());
         if (getline(in, line)) {
             Lexer* lexer = new Lexer(line);
             parts = lexer->lexerAlgorithem();
@@ -57,50 +54,32 @@ Command* FunctionBundles::createIfCommand(SymbolTable* symbolTable, vector<strin
         }
     }
     IfCommand* ifCommand = new IfCommand(condition);
-    commands.push((Command*)ifCommand);
     while (parts[0] != "}") {
         if (getline(in, line)) {
             Lexer* lexer = new Lexer(line);
             parts = lexer->lexerAlgorithem();
             if (parts[0] == "if") {
-                if (typeid(commands.top()).name() == "IfCommand") {
-                    ((IfCommand*)commands.top())->addCommand(createIfCommand(symbolTable, parts, commands, in));
-                    commands.pop();
-                } else if (typeid(commands.top()).name() == "LoopCommand") {
-                    ((LoopCommand*)commands.top())->addCommand(createIfCommand(symbolTable, parts, commands, in));
-                    commands.pop();
-                }
+                ifCommand->addCommand(createIfCommand(symbolTable, parts, in));
             } else if (parts[0] == "while") {
-                if (typeid(commands.top()).name() == "IfCommand") {
-                    ((IfCommand*)commands.top())->addCommand(createLoopCommand(symbolTable, parts, commands, in));
-                    commands.pop();
-                } else if (typeid(commands.top()).name() == "LoopCommand") {
-                    ((LoopCommand*)commands.top())->addCommand(createLoopCommand(symbolTable, parts, commands, in));
-                    commands.pop();
-                }
+                ifCommand->addCommand(createLoopCommand(symbolTable, parts, in));
             } else {
-                string str = findAndCreateTypeOfDefineVarCommand(symbolTable, parts);
-                if (typeid(commands.top()).name() == "IfCommand") {
-                    ((IfCommand*)commands.top())->addCommand(symbolTable->getCommandTable().at(str));
-                } else if (typeid(commands.top()).name() == "LoopCommand") {
-                    ((LoopCommand*)commands.top())->addCommand(symbolTable->getCommandTable().at(str));
-                }
+                ifCommand->addCommand(findAndCreateTypeOfDefineVarCommand(symbolTable, parts));
+
             }
         } else {
             throw "incomplete file";
         }
     }
-    return commands.top();
+    return ifCommand;
 }
 
-Command* FunctionBundles::createLoopCommand(SymbolTable* symbolTable, vector<string> parts, stack<Command*> commands,
-        ifstream& in) {
+Command* FunctionBundles::createLoopCommand(SymbolTable* symbolTable, vector<string> parts, ifstream& in) {
     string line;
     Expression* condition;
     if (parts[parts.size() - 1] == "{") {
-        condition = createExpression(symbolTable->getCommandTable(), parts, 1, (int) (parts.size() - 1));
+        condition = createExpression(symbolTable->getValuesTable(), parts, 1, (int) (parts.size() - 1));
     } else {
-        condition = createExpression(symbolTable->getCommandTable(), parts, 1, (int) parts.size());
+        condition = createExpression(symbolTable->getValuesTable(), parts, 1, (int) parts.size());
         if (getline(in, line)) {
             Lexer* lexer = new Lexer(line);
             parts = lexer->lexerAlgorithem();
@@ -112,40 +91,22 @@ Command* FunctionBundles::createLoopCommand(SymbolTable* symbolTable, vector<str
         }
     }
     LoopCommand* loopCommand = new LoopCommand(condition);
-    commands.push((Command*)loopCommand);
     while (parts[0] != "}") {
         if (getline(in, line)) {
             Lexer* lexer = new Lexer(line);
             parts = lexer->lexerAlgorithem();
             if (parts[0] == "if") {
-                if (typeid(commands.top()).name() == "IfCommand") {
-                    ((IfCommand*)commands.top())->addCommand(createIfCommand(symbolTable, parts, commands, in));
-                    commands.pop();
-                } else if (typeid(commands.top()).name() == "LoopCommand") {
-                    ((LoopCommand*)commands.top())->addCommand(createIfCommand(symbolTable, parts, commands, in));
-                    commands.pop();
-                }
+                loopCommand->addCommand(createIfCommand(symbolTable, parts, in));
             } else if (parts[0] == "while") {
-                if (typeid(commands.top()).name() == "IfCommand") {
-                    ((IfCommand*)commands.top())->addCommand(createLoopCommand(symbolTable, parts, commands, in));
-                    commands.pop();
-                } else if (typeid(commands.top()).name() == "LoopCommand") {
-                    ((LoopCommand*)commands.top())->addCommand(createLoopCommand(symbolTable, parts, commands, in));
-                    commands.pop();
-                }
+                loopCommand->addCommand(createLoopCommand(symbolTable, parts, in));
             } else {
-                string str = findAndCreateTypeOfDefineVarCommand(symbolTable, parts);
-                if (typeid(commands.top()).name() == "IfCommand") {
-                    ((IfCommand*)commands.top())->addCommand(symbolTable->getCommandTable().at(str));
-                } else if (typeid(commands.top()).name() == "LoopCommand") {
-                    ((LoopCommand*)commands.top())->addCommand(symbolTable->getCommandTable().at(str));
-                }
+                loopCommand->addCommand(findAndCreateTypeOfDefineVarCommand(symbolTable, parts));
             }
         } else {
             throw "incomplete file";
         }
     }
-    return commands.top();
+    return loopCommand;
 }
 
 void FunctionBundles::parser(string fileName, SymbolTable* symbolTable) {
@@ -168,8 +129,8 @@ void FunctionBundles::parser(string fileName, SymbolTable* symbolTable) {
                         break;
                     }
                 }
-                port = createExpression(symbolTable->getCommandTable(), parts, 1, split + 1);
-                frequency = createExpression(symbolTable->getCommandTable(), parts, split + 1, (int) parts.size());
+                port = createExpression(symbolTable->getValuesTable(), parts, 1, split + 1);
+                frequency = createExpression(symbolTable->getValuesTable(), parts, split + 1, (int) parts.size());
                 /*if ((int) port->calculate() >= 1024 || (int) port->calculate() <= 49151) {
                     throw "not in port range";
                 }*/
@@ -177,8 +138,8 @@ void FunctionBundles::parser(string fileName, SymbolTable* symbolTable) {
                     throw "invalid frequency";
                 }
                 if (symbolTable->getCommandTable().find("openDataServer") == symbolTable->getCommandTable().end()) {
-                    symbolTable->getCommandTable()["openDataServer"] = new OpenServerCommand((int) port->calculate(),
-                            (int) frequency->calculate());
+                    symbolTable->getCommandTable()["openDataServer"] = new OpenServerCommand(symbolTable, (int)
+                            port->calculate(), (int) frequency->calculate());
                 } else {
                     ((OpenServerCommand*)symbolTable->getCommandTable()["openDataServer"])->setPort((int)
                     port->calculate());
@@ -198,7 +159,7 @@ void FunctionBundles::parser(string fileName, SymbolTable* symbolTable) {
                         }
                     }
                 }
-                port = createExpression(symbolTable->getCommandTable(), parts, 2, (int) parts.size());
+                port = createExpression(symbolTable->getValuesTable(), parts, 2, (int) parts.size());
                 /*if (atoi(values[0].C_str()) > || atoi(values[0].c_str()) < ) {
                     throw "not in port range";
                 }*/
@@ -211,15 +172,14 @@ void FunctionBundles::parser(string fileName, SymbolTable* symbolTable) {
                 }
                 symbolTable->getCommandTable()["connect"]->execute();
             } else if (parts[0] == "if") {
-                stack<Command*> commands;
-                Command* ifCommand = createIfCommand(symbolTable, parts, commands, in);
+                Command* ifCommand = createIfCommand(symbolTable, parts, in);
                 ifCommand->execute();
             } else if (parts[0] == "while") {
-                stack<Command*> commands;
-                Command* loopCommand = createLoopCommand(symbolTable, parts, commands, in);
+                Command* loopCommand = createLoopCommand(symbolTable, parts, in);
                 loopCommand->execute();
             } else {
-                findAndCreateTypeOfDefineVarCommand(symbolTable, parts);
+                Command* defineVarCommand = findAndCreateTypeOfDefineVarCommand(symbolTable, parts);
+                defineVarCommand->execute();
             }
         }
     }

@@ -20,10 +20,10 @@ using namespace std;
 
 class FunctionBundles {
 public:
-    Expression* createExpression(map<string,Command*> commandTable, vector<string> parts, int start, int end);
-    string findAndCreateTypeOfDefineVarCommand(SymbolTable* symbolTable, vector<string> parts);
-    Command* createIfCommand(SymbolTable* symbolTable, vector<string> parts, stack<Command*> commands, ifstream& in);
-    Command* createLoopCommand(SymbolTable* symbolTable, vector<string> parts, stack<Command*> commands, ifstream& in);
+    Expression* createExpression(map<string,double> valueTable, vector<string> parts, int start, int end);
+    Command* findAndCreateTypeOfDefineVarCommand(SymbolTable* symbolTable, vector<string> parts);
+    Command* createIfCommand(SymbolTable* symbolTable, vector<string> parts, ifstream& in);
+    Command* createLoopCommand(SymbolTable* symbolTable, vector<string> parts, ifstream& in);
     void parser(string fileName, SymbolTable* symbolTable);
 };
 
