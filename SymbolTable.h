@@ -1,5 +1,9 @@
-#ifndef PROJECT_SYMBOLTABLE_H
-#define PROJECT_SYMBOLTABLE_H
+//
+// Created by edan on 12/21/18.
+//
+
+#ifndef PROJ1_SYMBOLTABLE_H
+#define PROJ1_SYMBOLTABLE_H
 
 #include <map>
 #include <string>
@@ -20,4 +24,4 @@ public:
     map<string, double> &getValuesTable() { return valuesTable; }
 };
 
-#endif //PROJECT_SYMBOLTABLE_H
+#endif //PROJ1_SYMBOLTABLE_H

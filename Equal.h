@@ -1,5 +1,5 @@
 //
-// Created by edan on 12/18/18.
+// Created by ori on 12/18/18.
 //
 
 #ifndef PROJ1_EQUAL_H

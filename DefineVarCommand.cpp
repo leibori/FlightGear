@@ -1,6 +1,13 @@
+//
+// Created by ori on 12/23/18.
+//
+
+
 #include "DefineVarCommand.h"
 
 void DefineVarCommand::execute() {
+    if (expression != NULL){
+    value = expression->calculate();}
     if (symbolTable->getValuesTable().find(name) != symbolTable->getValuesTable().end()) {
         symbolTable->getValuesTable().find(name)->second = value;
     } else {

@@ -1,5 +1,8 @@
-#include "LoopCommand.h"
+//
+// Created by edan on 12/21/18.
+//
 
+#include "LoopCommand.h"
 void LoopCommand::execute() {
     while (condition->calculate()) {
         for (auto& command : commands) {

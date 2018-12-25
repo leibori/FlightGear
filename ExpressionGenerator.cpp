@@ -11,6 +11,7 @@
 #include "Bigger.h"
 #include "Smaller.h"
 #include "Equal.h"
+#include "Unequal.h"
 #include "CommandExpression.h"
 #include "Neg.h"
 #include <fstream>
@@ -32,6 +33,7 @@
 #define BIGGER_IF if (temp == ">")
 #define SMALLER_IF if (temp == "<")
 #define EQUAL_IF if (temp == "==")
+#define UNEQUAL_IF if (temp == "!=")
 #define PLUS_SIGN "+"
 #define MINUS_SIGN "-"
 #define MULTIPLY_SIGN "*"
@@ -95,16 +97,17 @@ bool ExpressionGenerator::isCommandVar(const string &str) {
     return true;
 }
 
-Expression* ExpressionGenerator::CommmandExpressGener(string str, map<string, Command *> commandMap) {
+Expression *ExpressionGenerator::CommmandExpressGener(string str, map<string, Command *> commandMap) {
     if (commandMap.count(str)) {
         Command *com = commandMap.at(str);
-        auto dvc = (DefineVarCommand*) com;
+        auto dvc = (DefineVarCommand *) com;
         if (isCommandVar(str)) {
             Expression *exp = new CommandExpression(dvc);
             return exp;
         }
     }
-    throw runtime_error("Eror, Not Found");}
+    throw runtime_error("Eror, Not Found");
+}
 
 /*
  * function name: shuntingYardAlgoritem
@@ -202,6 +205,9 @@ Expression *ExpressionGenerator::generateExp(vector<string> orig, map<string, Co
                     ouput.push(numExp);
                 } else EQUAL_IF {
                     numExp = new Equal(left, right);
+                    ouput.push(numExp);
+                } else UNEQUAL_IF {
+                    numExp = new Unequal(left, right);
                     ouput.push(numExp);
                 }
             }
