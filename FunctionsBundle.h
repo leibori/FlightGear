@@ -20,7 +20,7 @@ using namespace std;
 
 class FunctionBundles {
 public:
-    Expression* createExpression(map<string,double> valueTable, vector<string> parts, int start, int end);
+    Expression* createExpression(SymbolTable* symbolTable, vector<string> parts, int start, int end);
     Command* findAndCreateTypeOfDefineVarCommand(SymbolTable* symbolTable, vector<string> parts);
     Command* createIfCommand(SymbolTable* symbolTable, vector<string> parts, ifstream& in);
     Command* createLoopCommand(SymbolTable* symbolTable, vector<string> parts, ifstream& in);

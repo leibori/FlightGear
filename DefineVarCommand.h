@@ -7,7 +7,8 @@
 
 class DefineVarCommand : public Command {
     string name;
-    Expression* expression;
+    string bindPath;
+    Expression* expression = nullptr;
     SymbolTable* symbolTable;
 public:
     DefineVarCommand(const string &name, Expression* expression1, SymbolTable *symbolTable) {
@@ -15,8 +16,17 @@ public:
         this->expression = expression1;
         this->symbolTable = symbolTable;
     }
+    DefineVarCommand(const string &name, string bindPath1, SymbolTable *symbolTable1) {
+        this->name = name;
+        this->bindPath = bindPath1;
+        this->symbolTable = symbolTable1;
+    }
     double getValue() { return symbolTable->getValuesTable().at(name); }
     void setExpression(Expression* expression1) { this->expression = expression1; }
+    void setBindPath(string bindPath1) {
+        this->bindPath = bindPath1;
+        this->expression = nullptr;
+    }
     void execute();
 };
 
