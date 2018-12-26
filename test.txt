@@ -1,0 +1,13 @@
+var x = 5
+var y = 3
+while x< 10
+{
+    if y<5 {
+    y=y+ 52/5
+    while x<1000
+     {
+        x= x*2
+     }
+}
+x = x+ y
+}
