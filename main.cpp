@@ -1,29 +1,35 @@
 #include <iostream>
-#include "ExpressionGenerator.h"
+#include "FunctionsBundle.h"
 #include "Expression.h"
-#include "BinaryExpression.h"
+#include "Lexer.h"
 #include <vector>
+#include <map>
+#include "Command.h"
+#include "SymbolTable.h"
+#include <iostream>
+#include <fstream>
+
 int main() {
-    ExpressionGenerator* sh = new  ExpressionGenerator();
-    vector<string> vecstri ;
-   // vecstri.push_back("(");
-   // vecstri.push_back("200");
-   // vecstri.push_back( "/");
-   // vecstri.push_back( "3");
-   // vecstri.push_back(")");
-   // vecstri.push_back( "+");
-    //vecstri.push_back( "(");
-    vecstri.push_back("(");
-    vecstri.push_back(  "56");
-    vecstri.push_back( "-");
-    vecstri.push_back( "70");
-    vecstri.push_back( ")");
-    vecstri.push_back( "*");
-    vecstri.push_back( "7");
+    ofstream ofstr("test.txt", ios::app);
+    SymbolTable *sym = new SymbolTable();
+    FunctionBundles *func = new FunctionBundles();
+    func->parser("test.txt", sym);
+
+
+
+    // vecstri.push_back("(");
+    // vecstri.push_back("200");
+    // vecstri.push_back( "/");
+    // vecstri.push_back( "3");
+    // vecstri.push_back(")");
+    //vecstri.push_back( "0.2");
+    // vecstri.push_back( "*");
+    // vecstri.push_back(  "0.2");
+    //vecstri.push_back( "==");
+    // vecstri.push_back("-");
+    //  vecstri.push_back( "0.2");
+    // vecstri.push_back( "*");
+    //vecstri.push_back( "0.4");
     //vecstri.push_back(")");
-
-
-    Expression* expressionnn = sh->GenerateExp(vecstri);
-    double d = expressionnn->calculate();
     return 0;
 }
