@@ -2,18 +2,23 @@
 #define PROJECT_CONNECTCOMMAND_H
 
 #include <string>
+#include <unistd.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <netdb.h>
 
 #include "Command.h"
+#include "SymbolTable.h"
 
 using namespace std;
 
 class ConnectCommand : public Command {
+    SymbolTable* symbolTable;
     int port;
     string ip;
 public:
-    ConnectCommand(string serverIp, int portNum) {
+    ConnectCommand(SymbolTable* symbolTable1, string serverIp, int portNum) {
+        symbolTable = symbolTable1
         port = portNum;
         ip = serverIp;
     }

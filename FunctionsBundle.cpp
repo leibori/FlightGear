@@ -4,7 +4,11 @@ Expression* FunctionsBundle::createExpression(SymbolTable* symbolTable, vector<s
     ExpressionGenerator expressionGenerator;
     vector<string> value;
     for ( int i = start; i < end; i++) {
-        value.push_back(parts[i]);
+        if (symbolTable->getValuesTable().find(parts[i]) != symbolTable->getValuesTable().end()) {
+            value.push_back(parts[i]);
+        } else {
+            throw "invalid variable";
+        }
     }
     return expressionGenerator.generateExp(value, symbolTable);
 }
@@ -73,9 +77,10 @@ Command* FunctionsBundle::createIfCommand(SymbolTable* symbolTable, vector<strin
                 ifCommand->addCommand(createPrintCommand(symbolTable, parts));
             } else if (parts[0] == "sleep") {
                 ifCommand->addCommand(createSleepCommand(symbolTable, parts));
+            } else if (parts[0] == "}") {
+                break;
             } else {
                 ifCommand->addCommand(findAndCreateTypeOfDefineVarCommand(symbolTable, parts));
-
             }
         } else {
             throw "incomplete file";
@@ -114,6 +119,8 @@ Command* FunctionsBundle::createLoopCommand(SymbolTable* symbolTable, vector<str
                 loopCommand->addCommand(createPrintCommand(symbolTable, parts));
             } else if (parts[0] == "sleep") {
                 loopCommand->addCommand(createSleepCommand(symbolTable, parts));
+            } else if (parts[0] == "}") {
+                break;
             } else {
                 loopCommand->addCommand(findAndCreateTypeOfDefineVarCommand(symbolTable, parts));
             }
@@ -146,10 +153,10 @@ Command* FunctionsBundle::createSleepCommand(SymbolTable* symbolTable, vector<st
 }
 
 void FunctionsBundle::parser(string fileName, SymbolTable* symbolTable) {
-    string line;
     ifstream in (fileName);
-    if (in.is_open()) {
-        while (getline(in, line)) {
+    if (!in.is_open()) { return; }
+    string line;
+    while (getline(in, line)) {
             Lexer* lexer = new Lexer(line);
             vector<string> parts = lexer->lexerAlgorithem();
             if (parts[0] == "openDataServer") {
@@ -167,9 +174,9 @@ void FunctionsBundle::parser(string fileName, SymbolTable* symbolTable) {
                 }
                 port = createExpression(symbolTable, parts, 1, split + 1);
                 frequency = createExpression(symbolTable, parts, split + 1, (int) parts.size());
-                /*if ((int) port->calculate() >= 1024 || (int) port->calculate() <= 49151) {
+                if ((int) port->calculate() >= 1024 || (int) port->calculate() <= 65535) {
                     throw "not in port range";
-                }*/
+                }
                 if (frequency->calculate() <= 0) {
                     throw "invalid frequency";
                 }
@@ -189,9 +196,9 @@ void FunctionsBundle::parser(string fileName, SymbolTable* symbolTable) {
                     }
                 }
                 port = createExpression(symbolTable, parts, 2, (int) parts.size());
-                /*if (atoi(values[0].C_str()) > || atoi(values[0].c_str()) < ) {
+                if ((int) port->calculate() >= 1024 || (int) port->calculate() <= 65535) {
                     throw "not in port range";
-                }*/
+                }
                 ConnectCommand* connectCommand = new ConnectCommand(parts[1], (int) port->calculate());
                 connectCommand->execute();
             } else if (parts[0] == "if") {
@@ -211,5 +218,5 @@ void FunctionsBundle::parser(string fileName, SymbolTable* symbolTable) {
                 defineVarCommand->execute();
             }
         }
-    }
+    in.close();
 }

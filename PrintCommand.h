@@ -16,9 +16,7 @@ using namespace std;
 class PrintCommand : public Command {
     string toPrint;
 public:
-    explicit PrintCommand(Expression *ePrint) {
-        this->toPrint = to_string(ePrint->calculate());
-    }
+    explicit PrintCommand(Expression *ePrint) { this->toPrint = to_string(ePrint->calculate()); }
 
     explicit PrintCommand(string sPrint) { this->toPrint = sPrint; }
 

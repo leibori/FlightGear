@@ -11,7 +11,8 @@
 #include <sys/socket.h>
 #include <algorithm>
 #include <vector>
-#include <pthread.h>
+#include <thread>
+//#include <pthread.h>
 
 #include "Command.h"
 #include "SymbolTable.h"
@@ -39,10 +40,10 @@ public:
     void execute();
 };
 struct openDataServerParams;
-static void* executeInThread(void* args);
+static void* executeInThread(SymbolTable* symbolTable, int port, int freqency);
 void initializeBindValues(openDataServerParams* params);
-void constantRead(int newsockfd, openDataServerParams* params);
-void updateBindValues(vector<string> values, openDataServerParams* params);
+void constantRead(int newsockfd, SymbolTable* symbolTable);
+void updateBindValues(vector<string> values, SymbolTable* symbolTable);
 
 
 #endif //PROJECT_OPENSERVERCOMMAND_H

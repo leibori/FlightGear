@@ -1,10 +1,6 @@
-//
-// Created by ori on 12/26/18.
-//
-
-#include <chrono>
 #include "SleepCommand.h"
-#include <unistd.h>
+
 void SleepCommand::execute() {
-    usleep(toSleep->calculate());
+    long int milliseconds = abs((long int) toSleep->calculate());
+    this_thread::__sleep_for(chrono::seconds(milliseconds / 1000), chrono::nanoseconds(0));
 }

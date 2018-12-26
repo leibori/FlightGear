@@ -1,14 +1,10 @@
-//
-// Created by edan on 12/21/18.
-//
+#ifndef PROJECT_IFCOMMAND_H
+#define PROJECT_IFCOMMAND_H
 
-#ifndef PROJ1_IFCOMMAND_H
-#define PROJ1_IFCOMMAND_H
 #include <vector>
 
 #include "Expression.h"
 #include "Command.h"
-
 
 using namespace std;
 
@@ -21,4 +17,4 @@ public:
     void execute();
 };
 
-#endif //PROJ1_IFCOMMAND_H
+#endif //PROJECT_IFCOMMAND_H

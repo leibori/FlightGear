@@ -1,7 +1,3 @@
-//
-// Created by edan on 12/21/18.
-//
-
 #include "IfCommand.h"
 
 void IfCommand::execute() {

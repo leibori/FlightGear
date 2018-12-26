@@ -1,7 +1,5 @@
 #include "OpenServerCommand.h"
 
-std::mutex g_pages_mutex;
-
 using namespace std;
 
 struct openDataServerParams {
@@ -18,13 +16,15 @@ void OpenServerCommand::execute() {
     param.port = this->port;
     params = &param;
 
-    pthread_t serverThread;
-    pthread_create(&serverThread, nullptr, executeInThread, params);
+    std::thread thread1(executeInThread, symbolTable, port, frequency);
+    thread1.detach();
+    /*pthread_t serverThread;
+    pthread_create(&serverThread, nullptr, executeInThread, params);*/
 }
 
 
-static void* executeInThread(void* args) {
-    struct openDataServerParams* params = (struct openDataServerParams*) args;
+static void* executeInThread(SymbolTable* symbolTable, int port, int freqency) {
+    //struct openDataServerParams* params = (struct openDataServerParams*) args;
     int sock_fd, newsockfd, clilen;
     struct sockaddr_in serv_addr, cli_addr;
     /* First call to m_socket() function */
@@ -40,7 +40,7 @@ static void* executeInThread(void* args) {
 
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_addr.s_addr = INADDR_ANY;
-    serv_addr.sin_port = htons((uint16_t) params->port);
+    serv_addr.sin_port = htons((uint16_t) port);
 
     /* Now bind the host address using bind() call.*/
     if (bind(sock_fd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) {
@@ -65,7 +65,7 @@ static void* executeInThread(void* args) {
         exit(1);
     }
 
-    constantRead(newsockfd, params);
+    constantRead(newsockfd, symbolTable);
 }
 
 /*void initializeBindValues(openDataServerParams* params) {
@@ -95,7 +95,7 @@ static void* executeInThread(void* args) {
     params->symbolTable->getBindValuesTable().insert(pair<string,double>("/engines/engine/rpm",0));
 }*/
 
-void constantRead(int newsockfd, openDataServerParams* params) {
+void constantRead(int newsockfd, SymbolTable* symbolTable) {
     while (true){
         char buffer[255];
         ssize_t bytes_read;
@@ -107,35 +107,35 @@ void constantRead(int newsockfd, openDataServerParams* params) {
         } else  {
             Lexer lexer(buffer);
             vector<string> values = lexer.splitIt(buffer, ",");
-            updateBindValues(values, params);
+            updateBindValues(values, symbolTable);
             cout << buffer;
             this_thread::__sleep_for(chrono::seconds(1), chrono::nanoseconds(0));
         }
     }
 }
 
-void updateBindValues(vector<string> values, openDataServerParams* params) {
-    params->symbolTable->getBindValuesTable()["/instrumentation/airspeed-indicator/indicated-speed-kt"] = stod(values[0].c_str());
-    params->symbolTable->getBindValuesTable()["/instrumentation/altimeter/indicated-altitude-ft"] = stod(values[1].c_str());
-    params->symbolTable->getBindValuesTable()["/instrumentation/altimeter/pressure-alt-ft"] = stod(values[2].c_str());
-    params->symbolTable->getBindValuesTable()["/instrumentation/attitude-indicator/indicated-pitch-deg"] = stod(values[3].c_str());
-    params->symbolTable->getBindValuesTable()["/instrumentation/attitude-indicator/indicated-roll-deg"] = stod(values[4].c_str());
-    params->symbolTable->getBindValuesTable()["/instrumentation/attitude-indicator/internal-pitch-deg"] = stod(values[5].c_str());
-    params->symbolTable->getBindValuesTable()["/instrumentation/attitude-indicator/internal-roll-deg"] = stod(values[6].c_str());
-    params->symbolTable->getBindValuesTable()["/instrumentation/encoder/indicated-altitude-ft"] = stod(values[7].c_str());
-    params->symbolTable->getBindValuesTable()["/instrumentation/encoder/pressure-alt-ft"] = stod(values[8].c_str());
-    params->symbolTable->getBindValuesTable()["/instrumentation/gps/indicated-altitude-ft"] = stod(values[9].c_str());
-    params->symbolTable->getBindValuesTable()["/instrumentation/gps/indicated-ground-speed-kt"] = stod(values[10].c_str());
-    params->symbolTable->getBindValuesTable()["/instrumentation/gps/indicated-vertical-speed"] = stod(values[11].c_str());
-    params->symbolTable->getBindValuesTable()["/instrumentation/heading-indicator/indicated-heading-deg"] = stod(values[12].c_str());
-    params->symbolTable->getBindValuesTable()["/instrumentation/magnetic-compass/indicated-heading-deg"] = stod(values[13].c_str());
-    params->symbolTable->getBindValuesTable()["/instrumentation/slip-skid-ball/indicated-slip-skid"] = stod(values[14].c_str());
-    params->symbolTable->getBindValuesTable()["/instrumentation/turn-indicator/indicated-turn-rate"] = stod(values[15].c_str());
-    params->symbolTable->getBindValuesTable()["/instrumentation/vertical-speed-indicator/indicated-speed-fpm"] = stod(values[16].c_str());
-    params->symbolTable->getBindValuesTable()["/controls/flight/aileron"] = stod(values[17].c_str());
-    params->symbolTable->getBindValuesTable()["/controls/flight/elevator"] = stod(values[18].c_str());
-    params->symbolTable->getBindValuesTable()["/controls/flight/rudder"] = stod(values[19].c_str());
-    params->symbolTable->getBindValuesTable()["/controls/flight/flaps"] = stod(values[20].c_str());
-    params->symbolTable->getBindValuesTable()["/controls/engines/engine/throttle"] = stod(values[21].c_str());
-    params->symbolTable->getBindValuesTable()["/engines/engine/rpm"] = stod(values[22].c_str());
+void updateBindValues(vector<string> values, SymbolTable* symbolTable) {
+    symbolTable->updateBindValuesTable("/instrumentation/airspeed-indicator/indicated-speed-kt", stod(values[0].c_str()));
+    symbolTable->updateBindValuesTable("/instrumentation/altimeter/indicated-altitude-ft", stod(values[1].c_str()));
+    symbolTable->updateBindValuesTable("/instrumentation/altimeter/pressure-alt-ft", stod(values[2].c_str()));
+    symbolTable->updateBindValuesTable("/instrumentation/attitude-indicator/indicated-pitch-deg", stod(values[3].c_str()));
+    symbolTable->updateBindValuesTable("/instrumentation/attitude-indicator/indicated-roll-deg", stod(values[4].c_str()));
+    symbolTable->updateBindValuesTable("/instrumentation/attitude-indicator/internal-pitch-deg", stod(values[5].c_str()));
+    symbolTable->updateBindValuesTable("/instrumentation/attitude-indicator/internal-roll-deg", stod(values[6].c_str()));
+    symbolTable->updateBindValuesTable("/instrumentation/encoder/indicated-altitude-ft", stod(values[7].c_str()));
+    symbolTable->updateBindValuesTable("/instrumentation/encoder/pressure-alt-ft", stod(values[8].c_str()));
+    symbolTable->updateBindValuesTable("/instrumentation/gps/indicated-altitude-ft", stod(values[9].c_str()));
+    symbolTable->updateBindValuesTable("/instrumentation/gps/indicated-ground-speed-kt", stod(values[10].c_str()));
+    symbolTable->updateBindValuesTable("/instrumentation/gps/indicated-vertical-speed", stod(values[11].c_str()));
+    symbolTable->updateBindValuesTable("/instrumentation/heading-indicator/indicated-heading-deg", stod(values[12].c_str()));
+    symbolTable->updateBindValuesTable("/instrumentation/magnetic-compass/indicated-heading-deg", stod(values[13].c_str()));
+    symbolTable->updateBindValuesTable("/instrumentation/slip-skid-ball/indicated-slip-skid", stod(values[14].c_str()));
+    symbolTable->updateBindValuesTable("/instrumentation/turn-indicator/indicated-turn-rate", stod(values[15].c_str()));
+    symbolTable->updateBindValuesTable("/instrumentation/vertical-speed-indicator/indicated-speed-fpm", stod(values[16].c_str()));
+    symbolTable->updateBindValuesTable("/controls/flight/aileron", stod(values[17].c_str()));
+    symbolTable->updateBindValuesTable("/controls/flight/elevator", stod(values[18].c_str()));
+    symbolTable->updateBindValuesTable("/controls/flight/rudder", stod(values[19].c_str()));
+    symbolTable->updateBindValuesTable("/controls/flight/flaps", stod(values[20].c_str()));
+    symbolTable->updateBindValuesTable("/controls/engines/engine/throttle", stod(values[21].c_str()));
+    symbolTable->updateBindValuesTable("/engines/engine/rpm", stod(values[22].c_str()));
 }

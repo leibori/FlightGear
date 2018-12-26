@@ -51,10 +51,6 @@ public:
     void updateBindTable(string key, string value);
 
     void updateBindValuesTable(string key, double value);
-
-    void removeFromValuesTable(string key);
-
-    void removeFromBindTable(string key);
 };
 
 #endif //PROJECT_SYMBOLTABLE_H

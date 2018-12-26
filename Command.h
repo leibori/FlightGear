@@ -3,7 +3,7 @@
 
 class Command {
 public:
-    virtual int execute() = 0;
+    virtual void execute() = 0;
 };
 
 #endif //PROJECT_COMMAND_H
