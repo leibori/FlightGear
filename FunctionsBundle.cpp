@@ -1,6 +1,6 @@
 #include "FunctionsBundle.h"
 
-Expression* FunctionBundles::createExpression(SymbolTable* symbolTable, vector<string> parts, int start, int end) {
+Expression* FunctionsBundle::createExpression(SymbolTable* symbolTable, vector<string> parts, int start, int end) {
     ExpressionGenerator expressionGenerator;
     vector<string> value;
     for ( int i = start; i < end; i++) {
@@ -9,7 +9,7 @@ Expression* FunctionBundles::createExpression(SymbolTable* symbolTable, vector<s
     return expressionGenerator.generateExp(value, symbolTable);
 }
 
-Command* FunctionBundles::findAndCreateTypeOfDefineVarCommand(SymbolTable* symbolTable, vector<string> parts) {
+Command* FunctionsBundle::findAndCreateTypeOfDefineVarCommand(SymbolTable* symbolTable, vector<string> parts) {
     if (parts[0] == "var" && parts[2] == "=") {
         if (parts[3] == "bind") {
             DefineVarCommand* defineVarCommand = new DefineVarCommand(parts[1], parts[4], symbolTable);
@@ -43,7 +43,7 @@ Command* FunctionBundles::findAndCreateTypeOfDefineVarCommand(SymbolTable* symbo
     }
 }
 
-Command* FunctionBundles::createIfCommand(SymbolTable* symbolTable, vector<string> parts, ifstream& in) {
+Command* FunctionsBundle::createIfCommand(SymbolTable* symbolTable, vector<string> parts, ifstream& in) {
     string line;
     Expression* condition;
     if (parts[parts.size() - 1] == "{") {
@@ -84,7 +84,7 @@ Command* FunctionBundles::createIfCommand(SymbolTable* symbolTable, vector<strin
     return ifCommand;
 }
 
-Command* FunctionBundles::createLoopCommand(SymbolTable* symbolTable, vector<string> parts, ifstream& in) {
+Command* FunctionsBundle::createLoopCommand(SymbolTable* symbolTable, vector<string> parts, ifstream& in) {
     string line;
     Expression* condition;
     if (parts[parts.size() - 1] == "{") {
@@ -124,7 +124,7 @@ Command* FunctionBundles::createLoopCommand(SymbolTable* symbolTable, vector<str
     return loopCommand;
 }
 
-Command* FunctionBundles::createPrintCommand(SymbolTable* symbolTable, vector<string> parts) {
+Command* FunctionsBundle::createPrintCommand(SymbolTable* symbolTable, vector<string> parts) {
     if (parts[1][0] == '"' && parts[1][parts[1].size() - 1] == '"') {
         PrintCommand* printCommand = new PrintCommand(parts[1]);
         return printCommand;
@@ -135,7 +135,7 @@ Command* FunctionBundles::createPrintCommand(SymbolTable* symbolTable, vector<st
     }
 }
 
-Command* FunctionBundles::createSleepCommand(SymbolTable* symbolTable, vector<string> parts) {
+Command* FunctionsBundle::createSleepCommand(SymbolTable* symbolTable, vector<string> parts) {
     Expression* expression = createExpression(symbolTable, parts, 1, (int) parts.size());
     if (expression->calculate() >= 0) {
         SleepCommand* sleepCommand = new SleepCommand(expression);
@@ -145,7 +145,7 @@ Command* FunctionBundles::createSleepCommand(SymbolTable* symbolTable, vector<st
     }
 }
 
-void FunctionBundles::parser(string fileName, SymbolTable* symbolTable) {
+void FunctionsBundle::parser(string fileName, SymbolTable* symbolTable) {
     string line;
     ifstream in (fileName);
     if (in.is_open()) {

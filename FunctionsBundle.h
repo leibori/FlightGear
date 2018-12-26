@@ -20,7 +20,7 @@
 
 using namespace std;
 
-class FunctionBundles {
+class FunctionsBundle {
 public:
     Expression* createExpression(SymbolTable* symbolTable, vector<string> parts, int start, int end);
     Command* findAndCreateTypeOfDefineVarCommand(SymbolTable* symbolTable, vector<string> parts);
