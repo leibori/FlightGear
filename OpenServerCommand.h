@@ -18,6 +18,10 @@
 #include "Lexer.h"
 #include "vector"
 
+#include <thread>
+#include <chrono>
+#include <mutex>
+
 using namespace std;
 
 class OpenServerCommand : public Command {
@@ -34,10 +38,11 @@ public:
     void setFrequency(int newFreq) { frequency = newFreq; }
     void execute();
 };
-void* executeInThread(void*);
-void initializeBindValues();
-void constantRead(int newsockfd);
-void updateBindValues(vector<string> values);
+struct openDataServerParams;
+static void* executeInThread(void* args);
+void initializeBindValues(openDataServerParams* params);
+void constantRead(int newsockfd, openDataServerParams* params);
+void updateBindValues(vector<string> values, openDataServerParams* params);
 
 
 #endif //PROJECT_OPENSERVERCOMMAND_H

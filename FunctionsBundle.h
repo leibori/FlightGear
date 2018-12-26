@@ -15,6 +15,8 @@
 #include "IfCommand.h"
 #include "LoopCommand.h"
 #include "DefineVarCommand.h"
+#include "PrintCommand.h"
+#include "SleepCommand.h"
 
 using namespace std;
 
@@ -24,6 +26,8 @@ public:
     Command* findAndCreateTypeOfDefineVarCommand(SymbolTable* symbolTable, vector<string> parts);
     Command* createIfCommand(SymbolTable* symbolTable, vector<string> parts, ifstream& in);
     Command* createLoopCommand(SymbolTable* symbolTable, vector<string> parts, ifstream& in);
+    Command* createPrintCommand(SymbolTable* symbolTable, vector<string> parts);
+    Command* createSleepCommand(SymbolTable* symbolTable, vector<string> parts);
     void parser(string fileName, SymbolTable* symbolTable);
 };
 

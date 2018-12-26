@@ -69,6 +69,10 @@ Command* FunctionBundles::createIfCommand(SymbolTable* symbolTable, vector<strin
                 ifCommand->addCommand(createIfCommand(symbolTable, parts, in));
             } else if (parts[0] == "while") {
                 ifCommand->addCommand(createLoopCommand(symbolTable, parts, in));
+            } else if (parts[0] == "print") {
+                ifCommand->addCommand(createPrintCommand(symbolTable, parts));
+            } else if (parts[0] == "sleep") {
+                ifCommand->addCommand(createSleepCommand(symbolTable, parts));
             } else {
                 ifCommand->addCommand(findAndCreateTypeOfDefineVarCommand(symbolTable, parts));
 
@@ -106,6 +110,10 @@ Command* FunctionBundles::createLoopCommand(SymbolTable* symbolTable, vector<str
                 loopCommand->addCommand(createIfCommand(symbolTable, parts, in));
             } else if (parts[0] == "while") {
                 loopCommand->addCommand(createLoopCommand(symbolTable, parts, in));
+            } else if (parts[0] == "print") {
+                loopCommand->addCommand(createPrintCommand(symbolTable, parts));
+            } else if (parts[0] == "sleep") {
+                loopCommand->addCommand(createSleepCommand(symbolTable, parts));
             } else {
                 loopCommand->addCommand(findAndCreateTypeOfDefineVarCommand(symbolTable, parts));
             }
@@ -114,6 +122,27 @@ Command* FunctionBundles::createLoopCommand(SymbolTable* symbolTable, vector<str
         }
     }
     return loopCommand;
+}
+
+Command* FunctionBundles::createPrintCommand(SymbolTable* symbolTable, vector<string> parts) {
+    if (parts[1][0] == '"' && parts[1][parts[1].size() - 1] == '"') {
+        PrintCommand* printCommand = new PrintCommand(parts[1]);
+        return printCommand;
+    } else {
+        Expression* expression = createExpression(symbolTable, parts, 1, (int) parts.size());
+        PrintCommand* printCommand = new PrintCommand(expression);
+        return printCommand;
+    }
+}
+
+Command* FunctionBundles::createSleepCommand(SymbolTable* symbolTable, vector<string> parts) {
+    Expression* expression = createExpression(symbolTable, parts, 1, (int) parts.size());
+    if (expression->calculate() >= 0) {
+        SleepCommand* sleepCommand = new SleepCommand(expression);
+        return sleepCommand;
+    } else {
+        throw "can't sleep a negative amount of time";
+    }
 }
 
 void FunctionBundles::parser(string fileName, SymbolTable* symbolTable) {
@@ -171,6 +200,12 @@ void FunctionBundles::parser(string fileName, SymbolTable* symbolTable) {
             } else if (parts[0] == "while") {
                 Command* loopCommand = createLoopCommand(symbolTable, parts, in);
                 loopCommand->execute();
+            } else if (parts[0] == "print") {
+                Command* printCommand = createPrintCommand(symbolTable, parts);
+                printCommand->execute();
+            } else if (parts[0] == "sleep") {
+                Command* sleepCommand = createSleepCommand(symbolTable, parts);
+                sleepCommand->execute();
             } else {
                 Command* defineVarCommand = findAndCreateTypeOfDefineVarCommand(symbolTable, parts);
                 defineVarCommand->execute();
