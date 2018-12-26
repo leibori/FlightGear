@@ -17,15 +17,14 @@ using namespace std;
 
 class ExpressionGenerator {
 public:
-    Expression* generateExp(vector<string> orig, map<string,Command*> commandMap);
+    Expression* generateExp(vector<string> orig, SymbolTable* sym);
 private:
     int priority(const string &s);
     bool isOperator(const string &s);
     deque<string> shuntingYardAlgoritem(vector<string> orig);
     bool isCommandName(const string &s);
     bool isNumber(const string &s);
-    Expression* CommmandExpressGener( string str ,map<string,Command*> commandMap);
-    bool isCommandVar(const string &s);
+    double commmandValueGener(string str, SymbolTable *sym);
 
 
 

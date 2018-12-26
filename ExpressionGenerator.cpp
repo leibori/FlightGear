@@ -1,7 +1,7 @@
 //
 // Created by ori on 12/14/18.
 //
-
+#include "SymbolTable.h"
 #include "ExpressionGenerator.h"
 #include "Number.h"
 #include "Add.h"
@@ -77,7 +77,7 @@ int ExpressionGenerator::priority(const string &s) {
 }
 
 bool ExpressionGenerator::isCommandName(const string &s) {
-    return !(isOperator(s) || isNumber(s) || s == "(" || s == ")");
+    return !(isOperator(s) || isNumber(s) || s == "(" || s == ")" || s =="=");
 }
 
 bool ExpressionGenerator::isNumber(const string &s) {
@@ -90,21 +90,15 @@ bool ExpressionGenerator::isNumber(const string &s) {
     return isNum;
 }
 
-bool ExpressionGenerator::isCommandVar(const string &str) {
-    if (str == "openServer" || str == "connect") {
-        throw runtime_error("Eror, Not Found");
-    }
-    return true;
-}
 
-Expression *ExpressionGenerator::CommmandExpressGener(string str, map<string, Command *> commandMap) {
-    if (commandMap.count(str)) {
-        Command *com = commandMap.at(str);
-        auto dvc = (DefineVarCommand *) com;
-        if (isCommandVar(str)) {
-            Expression *exp = new CommandExpression(dvc);
-            return exp;
-        }
+double ExpressionGenerator::commmandValueGener(string str, SymbolTable *sym) {
+    if (sym->getValuesTable().count(str)) {
+        double com = sym->getValuesTable().at(str);
+        return com;
+    }
+    if (sym->getBindValuesTable().count(str)) {
+        double com = sym->getBindValuesTable().at(str);
+        return com;
     }
     throw runtime_error("Eror, Not Found");
 }
@@ -158,7 +152,7 @@ deque<string> ExpressionGenerator::shuntingYardAlgoritem(vector<string> orig) {
     return outQueue;
 }
 
-Expression *ExpressionGenerator::generateExp(vector<string> orig, map<string, Command *> commandMap) {
+Expression *ExpressionGenerator::generateExp(vector<string> orig, SymbolTable* sym) {
     deque<string> postFix = shuntingYardAlgoritem(orig);
     string fromQu;
     Expression *numExp;
@@ -169,8 +163,9 @@ Expression *ExpressionGenerator::generateExp(vector<string> orig, map<string, Co
             if (isNumber(temp)) {
                 numExp = new Number(stod(temp));
             }
-            if (isCommandName(temp)) {
-                numExp = CommmandExpressGener(temp, commandMap);
+            if(isCommandName(temp)){
+                double valueC = commmandValueGener(temp,sym);
+                numExp = new Number(valueC);
             }
             ouput.push(numExp);
             postFix.pop_back();

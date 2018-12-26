@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 #include "Lexer.h"
+
 #define IP_NUM cutIt[j] == '.'
 
 Lexer::Lexer(const string &toCut) : toCut(toCut) {}
@@ -13,8 +14,6 @@ Lexer::Lexer(const string &toCut) : toCut(toCut) {}
 vector<string> Lexer::lexerAlgorithem() {
     string cutIt = this->toCut;
     vector<string> afterCut;
-    // bool isNextVar = false;
-    //  bool isNextnumber = false;
     string s = "";
     int i = 0;
     int j = 0;
@@ -22,26 +21,41 @@ vector<string> Lexer::lexerAlgorithem() {
         if (isLexSign(cutIt[i])) {
             i++;
             continue;
-        } else if (isOperatorChar(cutIt[i])) {
+        } else if (isOperatorChar(cutIt, i)) {
             s = "";
             s.push_back(cutIt[i]);
+            if (istwoChars(cutIt,i)){
+                s.push_back(cutIt[i+1]);
+                i++;
+            }
             afterCut.push_back(s);
             i++;
         } else if (isdigit(cutIt[i])) {
             j = i + 1;
             s = "";
             s.push_back(cutIt[i]);
-            while (j < cutIt.size() && (isdigit(cutIt[j])|| IP_NUM)) {
+            while (j < cutIt.size() && (isdigit(cutIt[j]) || IP_NUM)) {
                 s.push_back(cutIt[j]);
                 j++;
             }
             afterCut.push_back(s);
             i = j;
-        } else {
+        }else     if (cutIt[i] == '"'){
             j = i + 1;
             s = "";
             s.push_back(cutIt[i]);
-            while ((j < cutIt.size()) && ((!isOperatorChar(cutIt[j])) && (!isLexSign(cutIt[j])))) {
+            while (cutIt[j] != '"') {
+                s.push_back(cutIt[j]);
+                j++;
+            }
+            afterCut.push_back(s);
+            i = j;
+        }
+        else {
+            j = i + 1;
+            s = "";
+            s.push_back(cutIt[i]);
+            while ((j < cutIt.size()) && ((!isOperatorChar(cutIt,j)) && (!isLexSign(cutIt[j])))) {
                 s.push_back(cutIt[j]);
                 j++;
             }
@@ -51,15 +65,29 @@ vector<string> Lexer::lexerAlgorithem() {
     }
     return afterCut;
 }
+bool Lexer::istwoChars(string c, int i) {
+    if(i<c.size()){
+        if ((c[i]== '=' && c[i+1]=='=')||(c[i]== '!' && c[i+1]=='=') ){
+            return true;
+        }
+    }
+    return false;
+}
 
-bool Lexer::isOperatorChar(char c) {
-    return (c == '+' || c == '-' || c == '*' || c == '/' || c == '(' || c == ')' || c == '=');
+bool Lexer::isOperatorChar(string c, int i) {
+    if(istwoChars(c,i)){
+    return true;
+    }
+    else
+        return c[i] == '+' || c[i] == '-' || c[i] == '*' || c[i] == '/' || c[i] == '(' || c[i] == ')' || c[i] == '=' ||
+            c[i] == '>' || c[i] == '<';
 }
 
 bool Lexer::isLexSign(char c) {
     return (c == ' ' || c == '\n' || c == ',' || c == '\t');
 
 }
+
 vector<string> Lexer::splitIt(string str, string token) {
     vector<string> result;
     while (str.size()) {
