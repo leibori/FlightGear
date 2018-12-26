@@ -19,7 +19,9 @@ public:
 
 
 private:
-    bool isOperatorChar(char c);
+    bool isOperatorChar(string c, int i);
     bool isLexSign(char c);
+    bool istwoChars(string c, int i);
+
 };
 #endif //PROJ1_LEXER_H
