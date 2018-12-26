@@ -14,6 +14,7 @@
 #include "Unequal.h"
 #include "CommandExpression.h"
 #include "Neg.h"
+#include "Var.h"
 #include <fstream>
 #include <vector>
 #include <iostream>
@@ -25,6 +26,7 @@
 #include <string>
 #include <algorithm>
 #include <map>
+
 
 #define PLUS_IF if (temp == "+")
 #define MINUS_IF if (temp == "-")
@@ -89,20 +91,6 @@ bool ExpressionGenerator::isNumber(const string &s) {
     }
     return isNum;
 }
-
-
-double ExpressionGenerator::commmandValueGener(string str, SymbolTable *sym) {
-    if (sym->getValuesTable().count(str)) {
-        double com = sym->getValuesTable().at(str);
-        return com;
-    }
-    if (sym->getBindValuesTable().count(str)) {
-        double com = sym->getBindValuesTable().at(str);
-        return com;
-    }
-    throw runtime_error("Eror, Not Found");
-}
-
 /*
  * function name: shuntingYardAlgoritem
  * The function get infix order defenition and make it postfix
@@ -164,8 +152,7 @@ Expression *ExpressionGenerator::generateExp(vector<string> orig, SymbolTable* s
                 numExp = new Number(stod(temp));
             }
             if(isCommandName(temp)){
-                double valueC = commmandValueGener(temp,sym);
-                numExp = new Number(valueC);
+                numExp = new Var(temp, sym);
             }
             ouput.push(numExp);
             postFix.pop_back();

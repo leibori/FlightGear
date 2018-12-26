@@ -24,7 +24,6 @@ private:
     deque<string> shuntingYardAlgoritem(vector<string> orig);
     bool isCommandName(const string &s);
     bool isNumber(const string &s);
-    double commmandValueGener(string str, SymbolTable *sym);
 
 
 
