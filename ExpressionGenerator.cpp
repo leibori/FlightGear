@@ -152,7 +152,11 @@ Expression *ExpressionGenerator::generateExp(vector<string> orig, SymbolTable* s
                 numExp = new Number(stod(temp));
             }
             if(isCommandName(temp)){
-                numExp = new Var(temp, sym);
+                if (sym->getValuesTable().count(temp)){
+                numExp = new Var(temp, sym);} else{
+                    throw "not found";
+                }
+
             }
             ouput.push(numExp);
             postFix.pop_back();

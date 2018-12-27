@@ -24,8 +24,8 @@ vector<string> Lexer::lexerAlgorithem() {
         } else if (isOperatorChar(cutIt, i)) {
             s = "";
             s.push_back(cutIt[i]);
-            if (istwoChars(cutIt,i)){
-                s.push_back(cutIt[i+1]);
+            if (istwoChars(cutIt, i)) {
+                s.push_back(cutIt[i + 1]);
                 i++;
             }
             afterCut.push_back(s);
@@ -40,22 +40,24 @@ vector<string> Lexer::lexerAlgorithem() {
             }
             afterCut.push_back(s);
             i = j;
-        }else     if (cutIt[i] == '"'){
+        } else if (cutIt[i] == '\"') {
             j = i + 1;
             s = "";
             s.push_back(cutIt[i]);
-            while (cutIt[j] != '"') {
+           // afterCut.push_back(s);
+           // s = "";
+            while (cutIt[j] != '\"') {
                 s.push_back(cutIt[j]);
                 j++;
             }
+            s.push_back(cutIt[j]);
             afterCut.push_back(s);
             i = j;
-        }
-        else {
+        } else {
             j = i + 1;
             s = "";
             s.push_back(cutIt[i]);
-            while ((j < cutIt.size()) && ((!isOperatorChar(cutIt,j)) && (!isLexSign(cutIt[j])))) {
+            while ((j < cutIt.size()) && ((!isOperatorChar(cutIt, j)) && (!isLexSign(cutIt[j])))) {
                 s.push_back(cutIt[j]);
                 j++;
             }
@@ -65,9 +67,10 @@ vector<string> Lexer::lexerAlgorithem() {
     }
     return afterCut;
 }
+
 bool Lexer::istwoChars(string c, int i) {
-    if(i<c.size()){
-        if ((c[i]== '=' && c[i+1]=='=')||(c[i]== '!' && c[i+1]=='=') ){
+    if (i < c.size()) {
+        if ((c[i] == '=' && c[i + 1] == '=') || (c[i] == '!' && c[i + 1] == '=')) {
             return true;
         }
     }
@@ -75,12 +78,11 @@ bool Lexer::istwoChars(string c, int i) {
 }
 
 bool Lexer::isOperatorChar(string c, int i) {
-    if(istwoChars(c,i)){
-    return true;
-    }
-    else
+    if (istwoChars(c, i)) {
+        return true;
+    } else
         return c[i] == '+' || c[i] == '-' || c[i] == '*' || c[i] == '/' || c[i] == '(' || c[i] == ')' || c[i] == '=' ||
-            c[i] == '>' || c[i] == '<';
+               c[i] == '>' || c[i] == '<';
 }
 
 bool Lexer::isLexSign(char c) {

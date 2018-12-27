@@ -12,7 +12,7 @@
 int main() {
     ofstream ofstr("test.txt", ios::app);
     SymbolTable *sym = new SymbolTable();
-    FunctionBundles *func = new FunctionBundles();
+    FunctionsBundle *func = new FunctionsBundle();
     func->parser("test.txt", sym);
 
 
