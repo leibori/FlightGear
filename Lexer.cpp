@@ -13,7 +13,7 @@ Lexer::Lexer(const string &toCut) : toCut(toCut) {}
 
 vector<string> Lexer::lexerAlgorithem() {
     string cutIt = this->toCut;
-    vector<string> afterCut;
+    vector <string> afterCut;
     string s = "";
     int i = 0;
     int j = 0;
@@ -44,8 +44,8 @@ vector<string> Lexer::lexerAlgorithem() {
             j = i + 1;
             s = "";
             s.push_back(cutIt[i]);
-           // afterCut.push_back(s);
-           // s = "";
+            // afterCut.push_back(s);
+            // s = "";
             while (cutIt[j] != '\"') {
                 s.push_back(cutIt[j]);
                 j++;
@@ -57,7 +57,7 @@ vector<string> Lexer::lexerAlgorithem() {
             j = i + 1;
             s = "";
             s.push_back(cutIt[i]);
-            while ((j < cutIt.size()) && ((!isOperatorChar(cutIt, j)) && (!isLexSign(cutIt[j])))) {
+            while ((j < cutIt.size()) && ((!isOperatorChar(cutIt, j)) && (!isLexSign(cutIt[j])) && (cutIt[j] != '"'))) {
                 s.push_back(cutIt[j]);
                 j++;
             }
