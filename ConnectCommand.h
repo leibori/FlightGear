@@ -2,6 +2,7 @@
 #define PROJECT_CONNECTCOMMAND_H
 
 #include <string>
+#include <string.h>
 #include <unistd.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -18,13 +19,14 @@ class ConnectCommand : public Command {
     string ip;
 public:
     ConnectCommand(SymbolTable* symbolTable1, string serverIp, int portNum) {
-        symbolTable = symbolTable1
+        symbolTable = symbolTable1;
         port = portNum;
         ip = serverIp;
     }
     void setPort(int newPort) { port = newPort; }
     void setIp(string newIp) { ip = newIp; }
     void execute();
+    void updateSimulator(string path);
     };
 
 #endif //PROJECT_CONNECTCOMMAND_H

@@ -1,6 +1,4 @@
-
 #include "FunctionsBundle.h"
-
 
 Expression *FunctionsBundle::createExpression(SymbolTable *symbolTable, vector<string> parts, int start, int end) {
     ExpressionGenerator expressionGenerator;
@@ -16,8 +14,10 @@ Command *FunctionsBundle::findAndCreateTypeOfDefineVarCommand(SymbolTable *symbo
         if (parts[3] == "bind") {
             if (parts[0] != "connect" && parts[0] != "openDataServer" && parts[0] != "if" && parts[0] != "while" &&
                 parts[0] != "print" && parts[0] != "sleep") {
-                DefineVarCommand *defineVarCommand = new DefineVarCommand(parts[1], parts[4], symbolTable);
+                DefineVarCommand *defineVarCommand = new DefineVarCommand(parts[4], parts[1], symbolTable);
                 return defineVarCommand;
+            } else {
+                throw "invalid path to bind";
             }
         } else {
             Expression *expression = createExpression(symbolTable, parts, 3, (int) parts.size());
@@ -34,10 +34,8 @@ Command *FunctionsBundle::findAndCreateTypeOfDefineVarCommand(SymbolTable *symbo
             Expression *expression = createExpression(symbolTable, parts, 2, (int) parts.size());
             if (symbolTable->getValuesTable().find(parts[0]) != symbolTable->getValuesTable().end() ||
                 symbolTable->getBindTable().find(parts[0]) != symbolTable->getBindTable().end()) {
-                if (parts[0] != "connect" && parts[0] != "openDataServer") {
-                    DefineVarCommand *defineVarCommand = new DefineVarCommand(parts[0], expression, symbolTable);
-                    return defineVarCommand;
-                }
+                DefineVarCommand *defineVarCommand = new DefineVarCommand(parts[0], expression, symbolTable);
+                return defineVarCommand;
             } else {
                 throw "DefineVarCommand not initialized";
             }
@@ -155,6 +153,8 @@ void FunctionsBundle::parser(string fileName, SymbolTable *symbolTable) {
     ifstream in(fileName);
     if (!in.is_open()) { return; }
     string line;
+    OpenServerCommand *openServerCommand;
+    ConnectCommand *connectCommand;
     while (getline(in, line)) {
         Lexer *lexer = new Lexer(line);
         vector<string> parts = lexer->lexerAlgorithem();
@@ -180,8 +180,7 @@ void FunctionsBundle::parser(string fileName, SymbolTable *symbolTable) {
             if (frequency->calculate() <= 0) {
                 throw "invalid frequency";
             }
-            OpenServerCommand *openServerCommand = new OpenServerCommand(symbolTable, (int) port->calculate(),
-                                                                         (int) frequency->calculate());
+            openServerCommand = new OpenServerCommand(symbolTable, (int) port->calculate(), (int) frequency->calculate());
             openServerCommand->execute();
         } else if (parts[0] == "connect") {
             Expression *port;
@@ -196,11 +195,11 @@ void FunctionsBundle::parser(string fileName, SymbolTable *symbolTable) {
                 }
             }
             port = createExpression(symbolTable, parts, 2, (int) parts.size());
-            if ((int) port->calculate() >= 1024 || (int) port->calculate() <= 65535) {
+            if ((int) port->calculate() < 1024 || (int) port->calculate() > 65535) {
                 throw "not in port range";
             }
-            /* ConnectCommand* connectCommand = new ConnectCommand(parts[1], (int) port->calculate());
-             connectCommand->execute();*/
+            connectCommand = new ConnectCommand(symbolTable, parts[1], (int) port->calculate());
+            connectCommand->execute();
         } else if (parts[0] == "if") {
             Command *ifCommand = createIfCommand(symbolTable, parts, in);
             ifCommand->execute();
