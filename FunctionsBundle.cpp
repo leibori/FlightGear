@@ -10,19 +10,27 @@ Expression *FunctionsBundle::createExpression(SymbolTable *symbolTable, vector<s
 }
 
 Command *FunctionsBundle::findAndCreateTypeOfDefineVarCommand(SymbolTable *symbolTable, vector<string> parts) {
-    if (parts[0] == "var" && parts[2] == "=") {
-        if (parts[3] == "bind") {
-            if (parts[0] != "connect" && parts[0] != "openDataServer" && parts[0] != "if" && parts[0] != "while" &&
-                parts[0] != "print" && parts[0] != "sleep") {
-                DefineVarCommand *defineVarCommand = new DefineVarCommand(parts[4], parts[1], symbolTable);
-                return defineVarCommand;
+    if (parts[0] == "var") {
+        if (parts[2] == "=") {
+            if (parts[3] == "bind") {
+                if (parts[0] != "connect" && parts[0] != "openDataServer" && parts[0] != "if" && parts[0] != "while" &&
+                    parts[0] != "print" && parts[0] != "sleep") {
+                    DefineVarCommand *defineVarCommand = new DefineVarCommand(parts[4], parts[1], symbolTable);
+                    return defineVarCommand;
+                } else {
+                    throw "invalid path to bind";
+                }
             } else {
-                throw "invalid path to bind";
+                Expression *expression = createExpression(symbolTable, parts, 3, (int) parts.size());
+                DefineVarCommand *defineVarCommand = new DefineVarCommand(parts[1], expression, symbolTable);
+                return defineVarCommand;
             }
-        } else {
-            Expression *expression = createExpression(symbolTable, parts, 3, (int) parts.size());
-            DefineVarCommand *defineVarCommand = new DefineVarCommand(parts[1], expression, symbolTable);
+        } else if (parts.size() == 2) {
+            Number *zero = new Number(0);
+            DefineVarCommand *defineVarCommand = new DefineVarCommand(parts[1], zero, symbolTable);
             return defineVarCommand;
+        } else {
+            throw "invalid initialization";
         }
     } else if (parts[1] == "=") {
         if (parts[2] == "bind") {
@@ -180,7 +188,8 @@ void FunctionsBundle::parser(string fileName, SymbolTable *symbolTable) {
             if (frequency->calculate() <= 0) {
                 throw "invalid frequency";
             }
-            openServerCommand = new OpenServerCommand(symbolTable, (int) port->calculate(), (int) frequency->calculate());
+            openServerCommand = new OpenServerCommand(symbolTable, (int) port->calculate(),
+                                                      (int) frequency->calculate());
             openServerCommand->execute();
         } else if (parts[0] == "connect") {
             Expression *port;
