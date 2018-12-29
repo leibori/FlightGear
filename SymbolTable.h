@@ -3,9 +3,11 @@
 
 #include <map>
 #include <string>
-#include "mutex"
+#include <vector>
+#include <mutex>
+//#include "mutex"
 
-#include "Command.h"
+#include "ConnectCommand.h"
 
 using namespace std;
 
@@ -13,7 +15,7 @@ class SymbolTable {
     map<string,double> valuesTable;
     map<string,string> bindTable;
     map<string,double> bindValuesTable;
-    int simulatorSocket = -1;
+    ConnectCommand *connectCommand = NULL;
 public:
     SymbolTable();
 
@@ -23,15 +25,15 @@ public:
 
     map<string, double> &getBindValuesTable() { return bindValuesTable; }
 
-    int getSimulatorSocket() { return  simulatorSocket; }
-
-    void setSimulatorSocket(int socket) { simulatorSocket = socket; }
+    void setConnectCommand(ConnectCommand *connectCommand1) { connectCommand = connectCommand1; }
 
     void updateValuesTable(string key, double value);
 
     void updateBindTable(string key, string value);
 
     void updateBindValuesTable(string key, double value);
+
+    void updateMultipleBindValues(vector<string> values);
 };
 
 #endif //PROJECT_SYMBOLTABLE_H

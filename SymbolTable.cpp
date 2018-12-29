@@ -58,8 +58,14 @@ void SymbolTable::updateValuesTable(string key, double value) {
     } else {
         valuesTable.insert(make_pair(key, value));
     }
-    if (bindTable.find(key) != bindTable.end()) {
-        bindValuesTable.find(bindTable.find(key)->second)->second = value;
+    for (map<string,string>::const_iterator it = bindTable.begin(); it != bindTable.end(); ++it) {
+        if (it->second == key) {
+            bindValuesTable[it->first] = value;
+            if (connectCommand != NULL) {
+                connectCommand->updateSimulator(it->first, value);
+            }
+            break;
+        }
     }
     recorder.unlock();
 }
@@ -79,6 +85,8 @@ void SymbolTable::updateBindTable(string key, string value) {
     }
     if (valuesTable.find(value) != valuesTable.end()) {
         valuesTable.find(value)->second = bindValuesTable.find(key)->second;
+    } else {
+        valuesTable.insert(make_pair(value, bindValuesTable.find(key)->second));
     }
     recorder.unlock();
 }
@@ -90,5 +98,33 @@ void SymbolTable::updateBindValuesTable(string key, double value) {
     } else {
         bindValuesTable.insert(make_pair(key, value));
     }
+    recorder.unlock();
+}
+
+void SymbolTable::updateMultipleBindValues(vector<string> values) {
+    recorder.lock();
+    bindValuesTable.at("/instrumentation/airspeed-indicator/indicated-speed-kt") =  strtod(values[0].c_str(), nullptr);
+    bindValuesTable.at("/instrumentation/altimeter/indicated-altitude-ft") =  strtod(values[1].c_str(), nullptr);
+    bindValuesTable.at("/instrumentation/altimeter/pressure-alt-ft") = strtod(values[2].c_str(), nullptr);
+    bindValuesTable.at("/instrumentation/attitude-indicator/indicated-pitch-deg") = strtod(values[3].c_str(), nullptr);
+    bindValuesTable.at("/instrumentation/attitude-indicator/indicated-roll-deg") = strtod(values[4].c_str(), nullptr);
+    bindValuesTable.at("/instrumentation/attitude-indicator/internal-pitch-deg") = strtod(values[5].c_str(), nullptr);
+    bindValuesTable.at("/instrumentation/attitude-indicator/internal-roll-deg") = strtod(values[6].c_str(), nullptr);
+    bindValuesTable.at("/instrumentation/encoder/indicated-altitude-ft") = strtod(values[7].c_str(), nullptr);
+    bindValuesTable.at("/instrumentation/encoder/pressure-alt-ft") = strtod(values[8].c_str(), nullptr);
+    bindValuesTable.at("/instrumentation/gps/indicated-altitude-ft") = strtod(values[9].c_str(), nullptr);
+    bindValuesTable.at("/instrumentation/gps/indicated-ground-speed-kt") = strtod(values[10].c_str(), nullptr);
+    bindValuesTable.at("/instrumentation/gps/indicated-vertical-speed") = strtod(values[11].c_str(), nullptr);
+    bindValuesTable.at("/instrumentation/heading-indicator/indicated-heading-deg") = strtod(values[12].c_str(), nullptr);
+    bindValuesTable.at("/instrumentation/magnetic-compass/indicated-heading-deg") = strtod(values[13].c_str(), nullptr);
+    bindValuesTable.at("/instrumentation/slip-skid-ball/indicated-slip-skid") = strtod(values[14].c_str(), nullptr);
+    bindValuesTable.at("/instrumentation/turn-indicator/indicated-turn-rate") = strtod(values[15].c_str(), nullptr);
+    bindValuesTable.at("/instrumentation/vertical-speed-indicator/indicated-speed-fpm") = strtod(values[16].c_str(), nullptr);
+    bindValuesTable.at("/controls/flight/aileron") = strtod(values[17].c_str(), nullptr);
+    bindValuesTable.at("/controls/flight/elevator") = strtod(values[18].c_str(), nullptr);
+    bindValuesTable.at("/controls/flight/rudder") = strtod(values[19].c_str(), nullptr);
+    bindValuesTable.at("/controls/flight/flaps") = strtod(values[20].c_str(), nullptr);
+    bindValuesTable.at("/controls/engines/engine/throttle") = strtod(values[21].c_str(), nullptr);
+    bindValuesTable.at("/engines/engine/rpm") = strtod(values[22].c_str(), nullptr);
     recorder.unlock();
 }
