@@ -13,13 +13,9 @@ Command *FunctionsBundle::findAndCreateTypeOfDefineVarCommand(SymbolTable *symbo
     if (parts[0] == "var") {
         if (parts[2] == "=") {
             if (parts[3] == "bind") {
-                if (parts[0] != "connect" && parts[0] != "openDataServer" && parts[0] != "if" && parts[0] != "while" &&
-                    parts[0] != "print" && parts[0] != "sleep") {
-                    DefineVarCommand *defineVarCommand = new DefineVarCommand(parts[4], parts[1], symbolTable);
-                    return defineVarCommand;
-                } else {
-                    throw "invalid path to bind";
-                }
+                string subStr = parts[4].substr(1, parts[4].size() - 2);
+                DefineVarCommand *defineVarCommand = new DefineVarCommand(subStr, parts[1], symbolTable);
+                return defineVarCommand;
             } else {
                 Expression *expression = createExpression(symbolTable, parts, 3, (int) parts.size());
                 DefineVarCommand *defineVarCommand = new DefineVarCommand(parts[1], expression, symbolTable);
@@ -34,20 +30,20 @@ Command *FunctionsBundle::findAndCreateTypeOfDefineVarCommand(SymbolTable *symbo
         }
     } else if (parts[1] == "=") {
         if (parts[2] == "bind") {
+            string subStr = parts[3].substr(1, parts[3].size() - 2);
             if (symbolTable->getValuesTable().find(parts[0]) != symbolTable->getValuesTable().end()) {
                 DefineVarCommand *defineVarCommand = new DefineVarCommand(parts[0], parts[3], symbolTable);
                 return defineVarCommand;
+            } else {
+                throw "variable wasn't initialized";
             }
         } else {
             Expression *expression = createExpression(symbolTable, parts, 2, (int) parts.size());
-            if (symbolTable->getValuesTable().find(parts[0]) != symbolTable->getValuesTable().end() ||
-                symbolTable->getBindTable().find(parts[0]) != symbolTable->getBindTable().end()) {
-                DefineVarCommand *defineVarCommand = new DefineVarCommand(parts[0], expression, symbolTable);
-                return defineVarCommand;
-            } else {
-                throw "DefineVarCommand not initialized";
-            }
+            DefineVarCommand *defineVarCommand = new DefineVarCommand(parts[0], expression, symbolTable);
+            return defineVarCommand;
         }
+    } else {
+        throw "invalid initialization";
     }
 }
 
@@ -158,6 +154,7 @@ Command *FunctionsBundle::createSleepCommand(SymbolTable *symbolTable, vector<st
 }
 
 void FunctionsBundle::parser(string fileName, SymbolTable *symbolTable) {
+    bool didOpenServer = false;
     ifstream in(fileName);
     if (!in.is_open()) { return; }
     string line;
@@ -182,7 +179,7 @@ void FunctionsBundle::parser(string fileName, SymbolTable *symbolTable) {
             }
             port = createExpression(symbolTable, parts, 1, split + 1);
             frequency = createExpression(symbolTable, parts, split + 1, (int) parts.size());
-            if ((int) port->calculate() >= 1024 || (int) port->calculate() <= 65535) {
+            if ((int) port->calculate() < 1024 || (int) port->calculate() > 65535) {
                 throw "not in port range";
             }
             if (frequency->calculate() <= 0) {
@@ -191,7 +188,11 @@ void FunctionsBundle::parser(string fileName, SymbolTable *symbolTable) {
             openServerCommand = new OpenServerCommand(symbolTable, (int) port->calculate(),
                                                       (int) frequency->calculate());
             openServerCommand->execute();
+            didOpenServer = true;
         } else if (parts[0] == "connect") {
+            if (!didOpenServer) {
+                throw "did not open a server to connect to";
+            }
             Expression *port;
             vector<string> ipValues = lexer->splitIt(parts[1], ".");
             if (ipValues.size() != 4) {
@@ -207,8 +208,9 @@ void FunctionsBundle::parser(string fileName, SymbolTable *symbolTable) {
             if ((int) port->calculate() < 1024 || (int) port->calculate() > 65535) {
                 throw "not in port range";
             }
-            connectCommand = new ConnectCommand(symbolTable, parts[1], (int) port->calculate());
+            connectCommand = new ConnectCommand(parts[1], (int) port->calculate());
             connectCommand->execute();
+            symbolTable->setConnectCommand(connectCommand);
         } else if (parts[0] == "if") {
             Command *ifCommand = createIfCommand(symbolTable, parts, in);
             ifCommand->execute();
