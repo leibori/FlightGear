@@ -1,5 +1,5 @@
 //
-// Created by edan on 12/18/18.
+// Created by ori on 12/18/18.
 //
 
 #include "Lexer.h"
@@ -27,6 +27,11 @@ vector<string> Lexer::lexerAlgorithem() {
             if (istwoChars(cutIt, i)) {
                 s.push_back(cutIt[i + 1]);
                 i++;
+            }
+            else if(((cutIt[i] == '<' )|| (cutIt[i] == '>' ))&& (i<cutIt.size())){
+                if (cutIt[i+1] == '='){
+                s.push_back(cutIt[i + 1]);
+                i++;}
             }
             afterCut.push_back(s);
             i++;
@@ -87,7 +92,6 @@ bool Lexer::isOperatorChar(string c, int i) {
 
 bool Lexer::isLexSign(char c) {
     return (c == ' ' || c == '\n' || c == ',' || c == '\t');
-
 }
 
 vector<string> Lexer::splitIt(string str, string token) {

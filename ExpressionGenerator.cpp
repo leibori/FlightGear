@@ -3,6 +3,8 @@
 //
 #include "SymbolTable.h"
 #include "ExpressionGenerator.h"
+#include "BigEqual.h"
+#include "SmallEqual.h"
 #include "Number.h"
 #include "Add.h"
 #include "Sub.h"
@@ -36,6 +38,8 @@
 #define SMALLER_IF if (temp == "<")
 #define EQUAL_IF if (temp == "==")
 #define UNEQUAL_IF if (temp == "!=")
+#define BIGEQUAL_IF if (temp == ">=")
+#define SMALLEQUAL_IF if (temp == "<=")
 #define PLUS_SIGN "+"
 #define MINUS_SIGN "-"
 #define MULTIPLY_SIGN "*"
@@ -44,6 +48,8 @@
 #define SMALLER_SIGN  "<"
 #define EQUAL_SIGN "=="
 #define NEGATIVE_SIGN "$"
+#define BIGEQUAL ">="
+#define SMALLEQUAL "<="
 
 
 using namespace std;
@@ -54,7 +60,8 @@ using namespace std;
  * */
 bool ExpressionGenerator::isOperator(const string &s) {
     return (s == PLUS_SIGN || s == MINUS_SIGN || s == MULTIPLY_SIGN || s == DEVISION_SIGN
-            || s == BIGGER_SIGN || s == SMALLER_SIGN || s == EQUAL_SIGN || s == NEGATIVE_SIGN);
+            || s == BIGGER_SIGN || s == SMALLER_SIGN || s == EQUAL_SIGN || s == NEGATIVE_SIGN || s == BIGEQUAL ||
+            s == SMALLEQUAL);
 }
 
 /*
@@ -79,7 +86,7 @@ int ExpressionGenerator::priority(const string &s) {
 }
 
 bool ExpressionGenerator::isCommandName(const string &s) {
-    return !(isOperator(s) || isNumber(s) || s == "(" || s == ")" || s =="=");
+    return !(isOperator(s) || isNumber(s) || s == "(" || s == ")" || s == "=");
 }
 
 bool ExpressionGenerator::isNumber(const string &s) {
@@ -91,6 +98,7 @@ bool ExpressionGenerator::isNumber(const string &s) {
     }
     return isNum;
 }
+
 /*
  * function name: shuntingYardAlgoritem
  * The function get infix order defenition and make it postfix
@@ -140,7 +148,7 @@ deque<string> ExpressionGenerator::shuntingYardAlgoritem(vector<string> orig) {
     return outQueue;
 }
 
-Expression *ExpressionGenerator::generateExp(vector<string> orig, SymbolTable* sym) {
+Expression *ExpressionGenerator::generateExp(vector<string> orig, SymbolTable *sym) {
     deque<string> postFix = shuntingYardAlgoritem(orig);
     string fromQu;
     Expression *numExp;
@@ -151,9 +159,10 @@ Expression *ExpressionGenerator::generateExp(vector<string> orig, SymbolTable* s
             if (isNumber(temp)) {
                 numExp = new Number(stod(temp));
             }
-            if(isCommandName(temp)){
-                if (sym->getValuesTable().count(temp)){
-                numExp = new Var(temp, sym);} else{
+            if (isCommandName(temp)) {
+                if (sym->getValuesTable().count(temp)) {
+                    numExp = new Var(temp, sym);
+                } else {
                     throw "not found";
                 }
 
@@ -194,6 +203,12 @@ Expression *ExpressionGenerator::generateExp(vector<string> orig, SymbolTable* s
                     ouput.push(numExp);
                 } else UNEQUAL_IF {
                     numExp = new Unequal(left, right);
+                    ouput.push(numExp);
+                } else BIGEQUAL_IF {
+                    numExp = new BigEqual(left, right);
+                    ouput.push(numExp);
+                } else SMALLEQUAL_IF {
+                    numExp = new SmallEqual(left, right);
                     ouput.push(numExp);
                 }
             }
