@@ -5,13 +5,12 @@
  * The function make exppression from the vector of string and take value from symbilTable ,by running from start to end
  **/
 Expression *FunctionsBundle::createExpression(SymbolTable *symbolTable, vector<string> parts, int start, int end) {
-    ExpressionGenerator expressionGenerator;
     vector<string> value;
     for (int i = start; i < end; i++) {
         value.push_back(parts[i]);
     }
     //generate expression
-    return expressionGenerator.generateExp(value, symbolTable);
+    return expressionGenerator->generateExp(value, symbolTable);
 }
 
 /*
@@ -276,20 +275,32 @@ void FunctionsBundle::parser(string fileName, SymbolTable *symbolTable) {
         } else if (parts[0] == "if") {
             Command *ifCommand = createIfCommand(symbolTable, parts, in);
             ifCommand->execute();
+            delete ifCommand;
         } else if (parts[0] == "while") {
             Command *loopCommand = createLoopCommand(symbolTable, parts, in);
             loopCommand->execute();
+            delete loopCommand;
         } else if (parts[0] == "print") {
             Command *printCommand = createPrintCommand(symbolTable, parts);
             printCommand->execute();
+            delete printCommand;
         } else if (parts[0] == "sleep") {
             Command *sleepCommand = createSleepCommand(symbolTable, parts);
             sleepCommand->execute();
+            delete sleepCommand;
             //its defineVarCommand , we need to check which one and create it
         } else {
             Command *defineVarCommand = findAndCreateTypeOfDefineVarCommand(symbolTable, parts);
             defineVarCommand->execute();
+            delete defineVarCommand;
         }
     }
     in.close();
+    symbolTable->isServerOpen = false;
+
+
+}
+
+FunctionsBundle::~FunctionsBundle() {
+delete expressionGenerator;
 }

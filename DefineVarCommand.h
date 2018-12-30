@@ -16,6 +16,9 @@ public:
         this->expression = expression1;
         this->symbolTable = symbolTable;
     }
+
+    virtual ~DefineVarCommand();
+
     DefineVarCommand(string bindPath1, const string &name, SymbolTable *symbolTable1) {
         this->name = name;
         this->bindPath = bindPath1;

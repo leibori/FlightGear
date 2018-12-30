@@ -10,3 +10,7 @@ UnaryExpression::UnaryExpression(Expression *alone) : alone(alone) {}
 Expression *UnaryExpression::getAlone() const {
     return alone;
 }
+
+UnaryExpression::~UnaryExpression() {
+delete alone;
+}

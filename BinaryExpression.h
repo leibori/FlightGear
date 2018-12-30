@@ -17,6 +17,8 @@ public:
 
     Expression *getRight() const;
 
+    virtual ~BinaryExpression();
+
 protected:
     Expression* left;
     Expression* right;

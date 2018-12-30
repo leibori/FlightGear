@@ -11,3 +11,9 @@ void IfCommand::execute() {
 void IfCommand::addCommand(Command* command) {
     commands.push_back(command);
 }
+
+IfCommand::~IfCommand() {
+for (vector<Command*>::iterator it = commands.begin(); it!= commands.end();it++){
+    delete *it;
+}
+}

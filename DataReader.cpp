@@ -45,7 +45,7 @@ void* DataReader::openServer(void* args) {
 
     symbolTable->isServerOpen = true;
 
-    while (true) {
+    while (symbolTable->isServerOpen) {
         string data;
         char buffer[2];
         ssize_t bytes_read;
@@ -65,4 +65,7 @@ void* DataReader::openServer(void* args) {
         //cout << data;
         this_thread::__sleep_for(chrono::seconds(1 / frequency), chrono::nanoseconds(0));
     }
+
+    close (newsockfd);
+    close (sockfd);
 }

@@ -231,12 +231,12 @@ Expression *ExpressionGenerator::generateExp(vector<string> orig, SymbolTable *s
         }
 
     }
-    Expression *finalValue = ouput.top();
-    //delete expresion
-    this->toDelete = finalValue;
-    ouput.pop();
-    return finalValue;
+//    Expression *finalValue = ouput.top();
+//    //delete expresion
+//    this->toDelete = finalValue;
+//    ouput.pop();
+    return ouput.top();
 }
 
-ExpressionGenerator::~ExpressionGenerator() { delete (this->toDelete); }
+//ExpressionGenerator::~ExpressionGenerator() { delete this->toDelete; }
 

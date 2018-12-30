@@ -5,12 +5,19 @@
 #include "FunctionsBundle.h"
 
 int main(int argc, char **argv) {
-    /*SymbolTable symbolTable;
-    ofstream ofstr("test.txt", ios::app);*/
     SymbolTable *sym = new SymbolTable();
     FunctionsBundle *func = new FunctionsBundle();
     if (argc > 1) {
-        func->parser(argv[1], sym);
+        try {
+            func->parser(argv[1], sym);
+        } catch (string message) {
+            cout << message << endl;
+            delete func;
+            delete sym;
+            return 0;
+        }
     }
+    delete func;
+    delete sym;
     return 0;
 }

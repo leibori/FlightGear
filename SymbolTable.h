@@ -28,6 +28,8 @@ public:
 
     void updateBindTable(string key, string value);
 
+    virtual ~SymbolTable();
+
     void updateMultipleBindValues(vector<string> values);
 };
 

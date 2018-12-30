@@ -24,10 +24,9 @@ public:
         ip = serverIp;
         isServerOpen = isServer;
     }
-    void setPort(int newPort) { port = newPort; }
-    void setIp(string newIp) { ip = newIp; }
     void execute();
     void updateSimulator(string path, double value);
-    };
+    ~ConnectCommand();
+};
 
 #endif //PROJECT_CONNECTCOMMAND_H

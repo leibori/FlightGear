@@ -11,3 +11,9 @@ void LoopCommand::execute() {
 void LoopCommand::addCommand(Command* command) {
     commands.push_back(command);
 }
+
+LoopCommand::~LoopCommand() {
+    for (vector<Command*>::iterator it = commands.begin(); it!= commands.end();it++){
+        delete *it;
+    }
+}

@@ -23,6 +23,11 @@ using namespace std;
 
 class FunctionsBundle {
 public:
+    virtual ~FunctionsBundle();
+
+private:
+    ExpressionGenerator* expressionGenerator;
+public:
     Expression* createExpression(SymbolTable* symbolTable, vector<string> parts, int start, int end);
     Command* findAndCreateTypeOfDefineVarCommand(SymbolTable* symbolTable, vector<string> parts);
     Command* createIfCommand(SymbolTable* symbolTable, vector<string> parts, ifstream& in);

@@ -13,6 +13,8 @@ public:
     FuncCommand() {}
     void addCommand(Command* command);
     void execute();
+
+    virtual ~FuncCommand();
 };
 
 #endif //PROJECT_FUNCCOMMAND_H

@@ -1,6 +1,4 @@
-//
-// Created by edan on 12/15/18.
-//
+
 #include "BinaryExpression.h"
 using namespace std;
 
@@ -12,5 +10,10 @@ Expression *BinaryExpression::getLeft() const {
 
 Expression *BinaryExpression::getRight() const {
  return right;
+}
+
+BinaryExpression::~BinaryExpression() {
+delete left;
+delete right;
 }
 

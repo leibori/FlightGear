@@ -13,6 +13,7 @@ public:
 
     Expression *getAlone() const;
 
+    virtual ~UnaryExpression();
 
 public:
 

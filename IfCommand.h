@@ -15,6 +15,8 @@ public:
     IfCommand(Expression* newCondition) { condition = newCondition; }
     void addCommand(Command* command);
     void execute();
+
+    virtual ~IfCommand();
 };
 
 #endif //PROJECT_IFCOMMAND_H

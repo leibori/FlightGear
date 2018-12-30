@@ -66,3 +66,7 @@ void ConnectCommand::updateSimulator(string path, double value) {
         throw "ERROR reading response from server.\n";
     }
 }
+
+ConnectCommand::~ConnectCommand() {
+    close (simulatorSocket);
+}

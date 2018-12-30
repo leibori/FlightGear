@@ -141,3 +141,7 @@ void SymbolTable::updateMultipleBindValues(vector<string> values) {
     }
     recorder.unlock();
 }
+
+SymbolTable::~SymbolTable() {
+delete connectCommand;
+}

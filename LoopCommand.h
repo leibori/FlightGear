@@ -15,7 +15,10 @@ public:
     LoopCommand(Expression* newCondition) { condition = newCondition; }
     void addCommand(Command* command);
     void execute();
+
+    virtual ~LoopCommand();
 };
+
 
 
 #endif //PROJECT_LOOPCOMMAND_H

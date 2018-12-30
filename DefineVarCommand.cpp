@@ -7,3 +7,9 @@ void DefineVarCommand::execute() {
         symbolTable->updateBindTable(bindPath, name);
     }
 }
+
+DefineVarCommand::~DefineVarCommand() {
+if (expression!= nullptr){
+    delete expression;
+}
+}

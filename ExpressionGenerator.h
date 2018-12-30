@@ -1,7 +1,3 @@
-//
-// Created by ori on 12/14/18.
-//
-
 #ifndef PROJ1_SHUNTINGYARD_H
 #define PROJ1_SHUNTINGYARD_H
 
@@ -12,6 +8,7 @@
 #include <map>
 #include "Expression.h"
 #include "Command.h"
+#include "SymbolTable.h"
 
 using namespace std;
 
@@ -19,7 +16,7 @@ class ExpressionGenerator {
 public:
     Expression* generateExp(vector<string> orig, SymbolTable* sym);
 
-    virtual ~ExpressionGenerator();
+    //virtual ~ExpressionGenerator();
 
 private:
     int priority(const string &s);
@@ -27,7 +24,7 @@ private:
     deque<string> shuntingYardAlgoritem(vector<string> orig);
     bool isCommandName(const string &s);
     bool isNumber(const string &s);
-    Expression* toDelete;
+    //Expression* toDelete;
 
 
 };
