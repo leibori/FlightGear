@@ -20,7 +20,6 @@
 using namespace std;
 
 class DataReader {
-private:
 public:
     static void* openServer(void* portNum);
 };

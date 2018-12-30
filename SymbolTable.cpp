@@ -84,19 +84,27 @@ void SymbolTable::updateBindTable(string key, string value) {
         bindTable.insert(make_pair(key, value));
     }
     if (valuesTable.find(value) != valuesTable.end()) {
-        valuesTable.find(value)->second = bindValuesTable.find(key)->second;
+        if (bindValuesTable.find(key) != bindValuesTable.end()) {
+            bindValuesTable.find(key)->second = valuesTable.find(value)->second;
+        } else {
+            bindValuesTable.insert(make_pair(key, valuesTable.find(value)->second));
+        }
+        if (connectCommand != NULL) {
+            connectCommand->updateSimulator(key, valuesTable.find(value)->second);
+        }
     } else {
-        valuesTable.insert(make_pair(value, bindValuesTable.find(key)->second));
-    }
-    recorder.unlock();
-}
-
-void SymbolTable::updateBindValuesTable(string key, double value) {
-    recorder.lock();
-    if (bindValuesTable.find(key) != bindValuesTable.end()) {
-        bindValuesTable.find(key)->second = value;
-    } else {
-        bindValuesTable.insert(make_pair(key, value));
+        if (bindValuesTable.find(key) != bindValuesTable.end()) {
+            valuesTable.insert(make_pair(value, bindValuesTable.find(key)->second));
+            if (connectCommand != NULL) {
+                connectCommand->updateSimulator(key, bindValuesTable.find(key)->second);
+            }
+        } else {
+            valuesTable.insert(make_pair(value, 0));
+            bindValuesTable.insert(make_pair(key, 0));
+            if (connectCommand != NULL) {
+                connectCommand->updateSimulator(key, 0);
+            }
+        }
     }
     recorder.unlock();
 }
@@ -126,5 +134,10 @@ void SymbolTable::updateMultipleBindValues(vector<string> values) {
     bindValuesTable.at("/controls/flight/flaps") = strtod(values[20].c_str(), nullptr);
     bindValuesTable.at("/controls/engines/engine/throttle") = strtod(values[21].c_str(), nullptr);
     bindValuesTable.at("/engines/engine/rpm") = strtod(values[22].c_str(), nullptr);
+    for (map<string,string>::const_iterator it = bindTable.begin(); it != bindTable.end(); ++it) {
+        if (valuesTable.find(it->second) != valuesTable.end()) {
+            valuesTable.at(it->second) = bindValuesTable.at(it->first);
+        }
+    }
     recorder.unlock();
 }

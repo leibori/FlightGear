@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 #include <mutex>
-//#include "mutex"
 
 #include "ConnectCommand.h"
 
@@ -17,21 +16,17 @@ class SymbolTable {
     map<string,double> bindValuesTable;
     ConnectCommand *connectCommand = NULL;
 public:
+    bool isServerOpen = false;
+
     SymbolTable();
 
     map<string, double> &getValuesTable() { return valuesTable; }
-
-    map<string, string> &getBindTable() { return bindTable; }
-
-    map<string, double> &getBindValuesTable() { return bindValuesTable; }
 
     void setConnectCommand(ConnectCommand *connectCommand1) { connectCommand = connectCommand1; }
 
     void updateValuesTable(string key, double value);
 
     void updateBindTable(string key, string value);
-
-    void updateBindValuesTable(string key, double value);
 
     void updateMultipleBindValues(vector<string> values);
 };

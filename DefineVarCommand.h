@@ -16,7 +16,7 @@ public:
         this->expression = expression1;
         this->symbolTable = symbolTable;
     }
-    DefineVarCommand(const string &name, string bindPath1, SymbolTable *symbolTable1) {
+    DefineVarCommand(string bindPath1, const string &name, SymbolTable *symbolTable1) {
         this->name = name;
         this->bindPath = bindPath1;
         this->symbolTable = symbolTable1;

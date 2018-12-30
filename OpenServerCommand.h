@@ -11,15 +11,16 @@
 #include <sys/socket.h>
 #include <algorithm>
 #include <vector>
-#include <thread>
-//#include <pthread.h>
+//#include <thread>
+#include <pthread.h>
 
 #include "Command.h"
 #include "SymbolTable.h"
 #include "Lexer.h"
 #include "vector"
+#include "DataReaderArguments.h"
+#include "DataReader.h"
 
-#include <thread>
 #include <chrono>
 #include <mutex>
 

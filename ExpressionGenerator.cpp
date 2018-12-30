@@ -85,18 +85,28 @@ int ExpressionGenerator::priority(const string &s) {
     }
 }
 
+/*
+ * function name: isCommandName
+ * The function check if the string is command
+ * */
 bool ExpressionGenerator::isCommandName(const string &s) {
     return !(isOperator(s) || isNumber(s) || s == "(" || s == ")" || s == "=");
 }
 
+/*
+ * function name: isNumber
+ * The function check if the string it get is number
+ * */
 bool ExpressionGenerator::isNumber(const string &s) {
     int i = 0;
-    bool isNum = false;
     while (i != s.size()) {
-        isNum = isdigit(s[i]) != 0;
-        i++;
+        if (isdigit(s[i])) {
+            i++;
+        } else {
+            return false;
+        }
     }
-    return isNum;
+    return true;
 }
 
 /*
@@ -109,9 +119,10 @@ deque<string> ExpressionGenerator::shuntingYardAlgoritem(vector<string> orig) {
     deque<string> outQueue;
     stack<string> s; //main stack
 
-    //operator: +, -, *, /, (), >, <, ==
+    //operator: +, -, *, /, (), >, <, ==,!=,<=, >=
     //operands: 1234567890
     for (int i = 0; i < parts.size(); i++) {
+        //not operator or ( )
         if (!isOperator(parts[i]) && (parts[i] != "(" && parts[i] != ")")) {
             outQueue.push_front(parts[i]);
         }
@@ -141,13 +152,16 @@ deque<string> ExpressionGenerator::shuntingYardAlgoritem(vector<string> orig) {
     }
 //pop any remaining operators from the stack and insert to outputlist
     while (!s.empty()) {
-//outputList.push_back(s.top());
         outQueue.push_front(s.top());
         s.pop();
     }
     return outQueue;
 }
 
+/*
+ * function name: generateExp
+ * The function make exppression from the vector of string and take value from symbilTable
+ **/
 Expression *ExpressionGenerator::generateExp(vector<string> orig, SymbolTable *sym) {
     deque<string> postFix = shuntingYardAlgoritem(orig);
     string fromQu;
@@ -170,6 +184,7 @@ Expression *ExpressionGenerator::generateExp(vector<string> orig, SymbolTable *s
             ouput.push(numExp);
             postFix.pop_back();
         } else {
+            //making expresion by sign
             if (temp == NEGATIVE_SIGN) {
                 Expression *alone = ouput.top();
                 ouput.pop();
@@ -216,6 +231,12 @@ Expression *ExpressionGenerator::generateExp(vector<string> orig, SymbolTable *s
         }
 
     }
-    return ouput.top();
+    Expression *finalValue = ouput.top();
+    //delete expresion
+    this->toDelete = finalValue;
+    ouput.pop();
+    return finalValue;
 }
+
+ExpressionGenerator::~ExpressionGenerator() { delete (this->toDelete); }
 

@@ -4,6 +4,7 @@
 class Command {
 public:
     virtual void execute() = 0;
+    virtual ~Command(){};
 };
 
 #endif //PROJECT_COMMAND_H

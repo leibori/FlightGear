@@ -39,10 +39,11 @@ void* DataReader::openServer(void* args) {
     newsockfd = accept(sockfd, (struct sockaddr *)&cli_addr, (socklen_t*)&clilen);
 
     if (newsockfd < 0) {
-        //symbolTable->isServerOpenFailed = true;
         perror("Failed to accept server connection.");
         exit(1);
     }
+
+    symbolTable->isServerOpen = true;
 
     while (true) {
         string data;
