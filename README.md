@@ -5,6 +5,6 @@ A flight simulator desktop application that interacts with a dedicated server. W
 
 The user can connect to a server using the connect section, and fly the plane using the joystick. The plane moves on the map according to the data received from the server. The dashboard data is also displayed according to the data received from the server.
 
-
+[![2020-10-14-000122.jpg](https://i.postimg.cc/nrnQStnv/2020-10-14-000122.jpg)](https://postimg.cc/k6h4Dz64)
 
 
